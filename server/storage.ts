@@ -26,7 +26,7 @@ export class MemStorage implements IStorage {
     this.cafes = new Map();
     
     // Initialize Foursquare service if API key is available
-    const apiKey = process.env.FOURSQUARE_API_KEY || 'XND3JULQN4LT0IH2D5O4XKXE21TCELRYXEPUW5WU5FOGBNKH';
+    const apiKey = process.env.FOURSQUARE_API_KEY;
     console.log('Foursquare API key loaded:', apiKey ? `${apiKey.substring(0, 10)}...` : 'No key found');
     this.foursquareService = apiKey ? new FoursquareService(apiKey) : null;
     
