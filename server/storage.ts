@@ -1,6 +1,6 @@
 import { type User, type InsertUser, type Cafe, type InsertCafe } from "@shared/schema";
 import { randomUUID } from "crypto";
-import { calculateVibeScore } from "./lib/vibe-calculator";
+import { calculateVibeScore } from "../client/src/lib/vibe-calculator";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -173,7 +173,7 @@ export class MemStorage implements IStorage {
     ];
 
     sampleCafes.forEach(cafe => {
-      const vibeScore = calculateVibeScore(cafe.rating, cafe.reviewCount, cafe.priceLevel, cafe.tags);
+      const vibeScore = calculateVibeScore(cafe.rating, cafe.reviewCount, cafe.priceLevel, cafe.tags || []);
       this.cafes.set(cafe.id, { ...cafe, vibeScore });
     });
   }
@@ -205,7 +205,7 @@ export class MemStorage implements IStorage {
 
   async createCafe(insertCafe: InsertCafe): Promise<Cafe> {
     const id = insertCafe.id || randomUUID();
-    const vibeScore = calculateVibeScore(insertCafe.rating, insertCafe.reviewCount, insertCafe.priceLevel, insertCafe.tags);
+    const vibeScore = calculateVibeScore(insertCafe.rating, insertCafe.reviewCount, insertCafe.priceLevel, insertCafe.tags || []);
     const cafe: Cafe = { ...insertCafe, id, vibeScore };
     this.cafes.set(id, cafe);
     return cafe;
@@ -221,7 +221,7 @@ export class MemStorage implements IStorage {
         updatedCafe.rating,
         updatedCafe.reviewCount,
         updatedCafe.priceLevel,
-        updatedCafe.tags
+        updatedCafe.tags || []
       );
     }
     
@@ -237,7 +237,7 @@ export class MemStorage implements IStorage {
     return allCafes.filter(cafe => 
       cafe.name.toLowerCase().includes(lowercaseQuery) ||
       cafe.neighborhood.toLowerCase().includes(lowercaseQuery) ||
-      cafe.tags.some(tag => tag.toLowerCase().includes(lowercaseQuery))
+      (cafe.tags || []).some(tag => tag.toLowerCase().includes(lowercaseQuery))
     );
   }
 }

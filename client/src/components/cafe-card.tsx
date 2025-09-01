@@ -1,5 +1,5 @@
 import { type Cafe } from "@shared/schema";
-import { VibeScoreRing } from "./vibe-score-ring";
+import { VibeScoreRing } from "./vibe-score-ring.tsx";
 import { Badge } from "@/components/ui/badge";
 
 interface CafeCardProps {

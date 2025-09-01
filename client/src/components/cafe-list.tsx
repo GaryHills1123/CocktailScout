@@ -1,4 +1,4 @@
-import { CafeCard } from "./cafe-card";
+import { CafeCard } from "./cafe-card.tsx";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { type Cafe } from "@shared/schema";
@@ -119,11 +119,6 @@ export function CafeList({
         ) : filteredAndSortedCafes.length === 0 ? (
           <div className="p-8 text-center">
             <div className="text-muted-foreground" data-testid="text-no-cafes">No cafés found</div>
-            {searchQuery && (
-              <p className="text-sm text-muted-foreground mt-2">
-                Try adjusting your search or filters
-              </p>
-            )}
           </div>
         ) : (
           filteredAndSortedCafes.map(cafe => (
