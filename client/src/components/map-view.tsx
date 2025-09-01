@@ -19,6 +19,14 @@ export function MapView({ cafes, isLoading }: MapViewProps) {
     import("leaflet").then((L) => {
       if (!mapRef.current) return;
 
+      // Fix default icon paths for bundlers
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+        iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+      });
+
       const map = L.map(mapRef.current).setView([43.2557, -79.8711], 12);
       
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -26,6 +34,7 @@ export function MapView({ cafes, isLoading }: MapViewProps) {
       }).addTo(map);
 
       mapInstanceRef.current = map;
+      console.log('Map initialized successfully');
     });
 
     return () => {
@@ -37,39 +46,58 @@ export function MapView({ cafes, isLoading }: MapViewProps) {
   }, []);
 
   useEffect(() => {
-    if (!mapInstanceRef.current || isLoading) return;
+    if (!mapInstanceRef.current || isLoading || cafes.length === 0) return;
+    
+    console.log('Adding markers, cafes count:', cafes.length, cafes);
 
-    // Dynamic import for markers
-    import("leaflet").then((L) => {
-      const map = mapInstanceRef.current;
+    // Add a small delay to ensure map is fully ready
+    setTimeout(() => {
+      import("leaflet").then((L) => {
+        const map = mapInstanceRef.current;
+        if (!map) {
+          console.log('Map not ready');
+          return;
+        }
 
-      // Clear existing markers
-      markersRef.current.forEach(marker => map.removeLayer(marker));
-      markersRef.current = [];
+        // Clear existing markers
+        markersRef.current.forEach(marker => {
+          try {
+            map.removeLayer(marker);
+          } catch (e) {
+            console.log('Error removing marker:', e);
+          }
+        });
+        markersRef.current = [];
 
-      // Add new markers
-      cafes.forEach(cafe => {
-        const marker = L.circleMarker([cafe.latitude, cafe.longitude], {
-          radius: 8,
-          fillColor: getColorByScore(cafe.vibeScore),
-          color: '#fff',
-          weight: 2,
-          opacity: 1,
-          fillOpacity: 0.9
+        // Add new markers - try both circle markers and regular markers
+        cafes.forEach(cafe => {
+          console.log('Adding marker for:', cafe.name, 'at', cafe.latitude, cafe.longitude);
+          
+          // Try regular marker first
+          const marker = L.marker([cafe.latitude, cafe.longitude]);
+          
+          marker.bindPopup(`
+            <div style="padding: 8px;">
+              <h3 style="margin: 0; font-weight: bold;">${cafe.name}</h3>
+              <p style="margin: 4px 0; font-size: 14px;">Vibe Score: ${cafe.vibeScore}</p>
+              <p style="margin: 4px 0; font-size: 14px; color: #666;">${cafe.neighborhood}</p>
+            </div>
+          `);
+          
+          marker.addTo(map);
+          markersRef.current.push(marker);
+          console.log('Marker added successfully for', cafe.name);
         });
         
-        marker.bindPopup(`
-          <div class="p-2">
-            <h3 class="font-semibold">${cafe.name}</h3>
-            <p class="text-sm">Vibe Score: ${cafe.vibeScore}</p>
-            <p class="text-sm text-muted-foreground">${cafe.neighborhood}</p>
-          </div>
-        `);
+        console.log('Total markers added:', markersRef.current.length);
         
-        marker.addTo(map);
-        markersRef.current.push(marker);
+        // Also try to fit the map bounds to show all markers
+        if (markersRef.current.length > 0) {
+          const group = new L.featureGroup(markersRef.current);
+          map.fitBounds(group.getBounds(), { padding: [20, 20] });
+        }
       });
-    });
+    }, 100);
   }, [cafes, isLoading]);
 
   function getColorByScore(score: number): string {
