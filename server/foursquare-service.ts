@@ -63,7 +63,8 @@ export class FoursquareService {
   private readonly baseUrl = 'https://api.foursquare.com/v3';
 
   constructor(apiKey: string) {
-    this.apiKey = apiKey;
+    // Ensure API key has fsq3 prefix for v3 API
+    this.apiKey = apiKey.startsWith('fsq3') ? apiKey : `fsq3${apiKey}`;
   }
 
   private async makeRequest(endpoint: string, params: Record<string, string> = {}): Promise<any> {
