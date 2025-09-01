@@ -68,14 +68,38 @@ export default function Home() {
           <div className="relative">
             <Input
               type="text"
-              placeholder="Search cafés in Hamilton..."
+              placeholder="Search cafés by name, neighborhood, or tags (e.g., 'Pour Over', 'Westdale', 'Study Friendly')..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 bg-card border-border"
               data-testid="input-search"
             />
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                data-testid="button-clear-search"
+              >
+                ✕
+              </button>
+            )}
           </div>
+          {searchQuery && (
+            <div className="mt-2 text-sm text-muted-foreground">
+              {cafes && cafes.length > 0 ? (
+                <span>
+                  Found <strong>{cafes.length}</strong> café{cafes.length !== 1 ? 's' : ''} matching "{searchQuery}"
+                </span>
+              ) : isLoading ? (
+                <span>Searching...</span>
+              ) : (
+                <span className="text-amber-600">
+                  No cafés found for "{searchQuery}". Try searching for names like "Grind" or "Mulberry", neighborhoods like "Downtown" or "Westdale", or tags like "Pour Over" or "Study Friendly".
+                </span>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
