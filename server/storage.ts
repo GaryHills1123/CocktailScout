@@ -26,11 +26,14 @@ export class MemStorage implements IStorage {
     this.cafes = new Map();
     
     // Initialize Foursquare service if API key is available
-    const apiKey = process.env.FOURSQUARE_API_KEY;
+    const apiKey = process.env.FOURSQUARE_API_KEY || 'XND3JULQN4LT0IH2D5O4XKXE21TCELRYXEPUW5WU5FOGBNKH';
+    console.log('Foursquare API key loaded:', apiKey ? `${apiKey.substring(0, 10)}...` : 'No key found');
     this.foursquareService = apiKey ? new FoursquareService(apiKey) : null;
     
-    // Seed with sample data initially - real data will be loaded on first request
+    // Seed with sample data initially - real data will be loaded on first request  
     this.seedCafes();
+    
+    console.log('MemStorage initialized with Foursquare service:', !!this.foursquareService);
   }
 
   private seedCafes() {
@@ -210,6 +213,7 @@ export class MemStorage implements IStorage {
       try {
         console.log('Loading real coffee shop data from Foursquare...');
         const realCafes = await this.foursquareService.getCoffeeShopsForHamilton();
+        console.log(`Foursquare returned ${realCafes.length} cafes`);
         
         if (realCafes.length > 0) {
           // Clear existing data and add real data
@@ -218,10 +222,13 @@ export class MemStorage implements IStorage {
             this.cafes.set(cafe.id, cafe);
           });
           this.isDataLoaded = true;
-          console.log(`Loaded ${realCafes.length} real coffee shops from Foursquare`);
+          console.log(`Successfully loaded ${realCafes.length} real coffee shops from Foursquare`);
+        } else {
+          console.log('No cafes returned from Foursquare, keeping sample data');
         }
       } catch (error) {
         console.error('Failed to load real data, using sample data:', error);
+        console.error('Error details:', error.message || error);
       }
     }
     

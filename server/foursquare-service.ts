@@ -74,7 +74,7 @@ export class FoursquareService {
 
     const response = await fetch(url.toString(), {
       headers: {
-        'Authorization': this.apiKey,
+        'Authorization': `fsq3${this.apiKey}`,
         'Accept': 'application/json',
       },
     });
