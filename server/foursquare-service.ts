@@ -126,8 +126,8 @@ export class FoursquareService {
 
     let authHeader: string;
     if (this.apiKey) {
-      // Service API Key
-      authHeader = this.apiKey;
+      // Service API Key - v3 requires Bearer prefix
+      authHeader = `Bearer ${this.apiKey}`;
     } else {
       // OAuth token
       const token = await this.getAccessToken();

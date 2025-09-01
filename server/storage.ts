@@ -34,13 +34,13 @@ export class MemStorage implements IStorage {
     console.log('Foursquare OAuth Client Secret loaded:', clientSecret ? `${clientSecret.substring(0, 10)}...` : 'No client secret found');
     console.log('Foursquare API key loaded:', apiKey ? `${apiKey.substring(0, 10)}...` : 'No key found');
     
-    // Try OAuth first, fallback to Service API key
-    if (clientId && clientSecret) {
+    // Try Service API key first (with Bearer token fix), fallback to OAuth
+    if (apiKey) {
+      this.foursquareService = new FoursquareService(apiKey);
+      console.log('Using Foursquare Service API key authentication with Bearer token');
+    } else if (clientId && clientSecret) {
       this.foursquareService = new FoursquareService(undefined, clientId, clientSecret);
       console.log('Using Foursquare OAuth authentication');
-    } else if (apiKey) {
-      this.foursquareService = new FoursquareService(apiKey);
-      console.log('Using Foursquare Service API key authentication');
     } else {
       this.foursquareService = null;
       console.log('No Foursquare credentials available');
