@@ -91,7 +91,7 @@ export function MapView({ cafes, isLoading }: MapViewProps) {
 
       // Fit map to show all markers if we have any
       if (markersRef.current.length > 0) {
-        const group = new L.featureGroup(markersRef.current);
+        const group = new (L as any).featureGroup(markersRef.current);
         map.fitBounds(group.getBounds(), { 
           padding: [20, 20],
           maxZoom: 15

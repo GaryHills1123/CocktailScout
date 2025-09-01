@@ -36,7 +36,7 @@ export class MemStorage implements IStorage {
         rating: 4.6,
         reviewCount: 128,
         priceLevel: "$$",
-        imageUrl: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+        imageUrl: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" as string,
         tags: ["Single Origin", "Pour Over", "WiFi"],
         yelpId: "the-grind-coffee-co-hamilton",
         phone: "(905) 123-4567",
@@ -60,7 +60,7 @@ export class MemStorage implements IStorage {
         rating: 4.4,
         reviewCount: 95,
         priceLevel: "$$",
-        imageUrl: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+        imageUrl: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" as string,
         tags: ["Local Roaster", "Study Friendly", "Quiet"],
         yelpId: "mulberry-coffee-house-hamilton",
         phone: "(905) 234-5678",
@@ -84,7 +84,7 @@ export class MemStorage implements IStorage {
         rating: 4.8,
         reviewCount: 203,
         priceLevel: "$$$",
-        imageUrl: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+        imageUrl: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" as string,
         tags: ["Artisan Roasted", "Specialty Drinks", "Instagram Worthy"],
         yelpId: "sunrise-specialty-coffee-hamilton",
         phone: "(905) 345-6789",
@@ -108,7 +108,7 @@ export class MemStorage implements IStorage {
         rating: 4.3,
         reviewCount: 76,
         priceLevel: "$$",
-        imageUrl: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+        imageUrl: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" as string,
         tags: ["Neighborhood Feel", "Outdoor Patio"],
         yelpId: "bean-brew-collective-hamilton",
         phone: "(905) 456-7890",
@@ -132,7 +132,7 @@ export class MemStorage implements IStorage {
         rating: 4.5,
         reviewCount: 164,
         priceLevel: "$$",
-        imageUrl: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+        imageUrl: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" as string,
         tags: ["Espresso Bar", "Industrial Vibe", "Open Late"],
         yelpId: "steam-whistle-cafe-hamilton",
         phone: "(905) 567-8901",
@@ -156,7 +156,7 @@ export class MemStorage implements IStorage {
         rating: 4.2,
         reviewCount: 89,
         priceLevel: "$$",
-        imageUrl: "https://images.unsplash.com/photo-1521017432531-fbd92d768814?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+        imageUrl: "https://images.unsplash.com/photo-1521017432531-fbd92d768814?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" as string,
         tags: ["Vintage Vibe", "Board Games", "Comfy Seating"],
         yelpId: "retro-roasters-hamilton",
         phone: "(905) 678-9012",
@@ -174,7 +174,7 @@ export class MemStorage implements IStorage {
 
     sampleCafes.forEach(cafe => {
       const vibeScore = calculateVibeScore(cafe.rating, cafe.reviewCount, cafe.priceLevel, cafe.tags || []);
-      this.cafes.set(cafe.id, { ...cafe, vibeScore });
+      this.cafes.set(cafe.id, { ...cafe, vibeScore, imageUrl: cafe.imageUrl || null, openingHours: cafe.openingHours || {} });
     });
   }
 
@@ -206,7 +206,7 @@ export class MemStorage implements IStorage {
   async createCafe(insertCafe: InsertCafe): Promise<Cafe> {
     const id = insertCafe.id || randomUUID();
     const vibeScore = calculateVibeScore(insertCafe.rating, insertCafe.reviewCount, insertCafe.priceLevel, insertCafe.tags || []);
-    const cafe: Cafe = { ...insertCafe, id, vibeScore };
+    const cafe: Cafe = { ...insertCafe, id, vibeScore, imageUrl: insertCafe.imageUrl || null, openingHours: insertCafe.openingHours || {} };
     this.cafes.set(id, cafe);
     return cafe;
   }
@@ -221,12 +221,17 @@ export class MemStorage implements IStorage {
         updatedCafe.rating,
         updatedCafe.reviewCount,
         updatedCafe.priceLevel,
-        updatedCafe.tags || []
+        Array.isArray(updatedCafe.tags) ? updatedCafe.tags : []
       );
     }
     
-    this.cafes.set(id, updatedCafe);
-    return updatedCafe;
+    const finalCafe: Cafe = {
+      ...updatedCafe,
+      imageUrl: updatedCafe.imageUrl || null,
+      openingHours: updatedCafe.openingHours || {}
+    };
+    this.cafes.set(id, finalCafe);
+    return finalCafe;
   }
 
   async searchCafes(query: string): Promise<Cafe[]> {
@@ -242,30 +247,5 @@ export class MemStorage implements IStorage {
   }
 }
 
-function calculateVibeScore(rating: number, reviewCount: number, priceLevel: string, tags: string[]): number {
-  // Base score from rating (0-50 points)
-  const ratingScore = (rating / 5) * 50;
-  
-  // Review count score (0-20 points)
-  const reviewScore = Math.min(reviewCount / 200 * 20, 20);
-  
-  // Price level score (0-15 points) - $$ is optimal
-  const priceScores: Record<string, number> = { "$": 10, "$$": 15, "$$$": 10, "$$$$": 5 };
-  const priceScore = priceScores[priceLevel] || 0;
-  
-  // Coffee keyword bonus (0-15 points)
-  const coffeeKeywords = [
-    "Single Origin", "Pour Over", "Artisan Roasted", "Specialty Drinks",
-    "Local Roaster", "Espresso Bar", "French Press", "Cold Brew",
-    "Organic", "Fair Trade", "Third Wave"
-  ];
-  const keywordMatches = tags.filter(tag => 
-    coffeeKeywords.some(keyword => tag.includes(keyword))
-  ).length;
-  const keywordScore = Math.min(keywordMatches * 5, 15);
-  
-  const totalScore = ratingScore + reviewScore + priceScore + keywordScore;
-  return Math.round(Math.min(totalScore, 100));
-}
 
 export const storage = new MemStorage();
