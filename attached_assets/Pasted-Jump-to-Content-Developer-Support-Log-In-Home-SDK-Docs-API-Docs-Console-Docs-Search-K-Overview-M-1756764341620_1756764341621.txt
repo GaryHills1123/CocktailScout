@@ -1,0 +1,161 @@
+Jump to Content
+Developer
+Support
+Log In
+Home
+SDK Docs
+API Docs
+❯ Console Docs
+
+Search
+⌘K
+Overview
+Movement SDK
+Map SDK
+Map SDK Overview
+Introduction
+Setup
+
+Setup Guide - Map SDK
+Migration Guide - Map SDK
+Authentication - Map SDK
+Python best practices
+Guides
+
+Examples
+
+On-Prem Map SDK
+
+Release Notes - Map SDK
+SDK Reference
+
+Studio Data SDK
+Campaign SDK
+
+Setup Guide - Map SDK
+Suggest Edits
+To use Map SDK (since version 2.0), you'll need a Map SDK API Key. Map SDK uses this API Key to associate API requests with your account and provide additional control and security for your maps and SDK functionality. To learn how to create new API Keys, update their settings, delete them, and how to use them with Map SDK, see Authentication.
+
+The rest of this page contains setup information for the Map SDK:
+
+The JavaScript package, allowing you to use the Map SDK in HTML and JavaScript/Typescript.
+The Python package, allowing you to use the Map SDK in notebook environments.
+JavaScript Setup
+npm
+
+The Map SDK can be used with pure JavaScript code, or integrated with any JavaScript UI framework.
+
+The Map SDK also provides native Typescript typings.
+
+Installation
+If your project is using a bundler, you can install @foursquare/map-sdk as a module:
+
+Shell
+
+# yarn
+yarn add @foursquare/map-sdk
+# npm
+npm i @foursquare/map-sdk
+# bun
+bun add @foursquare/map-sdk
+Or if you want to use it in plan JS and HTML, you can get the SDK directly from a CDN:
+
+JavaScript
+
+import { createMap } from "https://cdn.jsdelivr.net/npm/@foursquare/map-sdk@latest/dist/index.js";
+Import
+You can then import the things that you'll use like so:
+
+JavaScript
+
+import { createMap } from "@foursquare/map-sdk";
+Python Setup
+PyPI version
+
+The Map SDK for Python enables the display of interactive Studio maps inside notebook environments. It also provides Python methods to control embedded maps, change map settings, add new data layers, and much more.
+
+Installation
+Install via pip:
+
+Shell
+
+$ pip install foursquare.map-sdk
+Notebooks
+Using a notebook environment may require additional installation steps.
+
+Visit your notebook environment's documentation page to complete setup:
+
+Jupyter
+Observable
+Google Colab
+Databricks
+SageMaker
+Visual Studio Code
+Import
+You can import the things that you need like so:
+
+Python
+
+from foursquare.map_sdk import create_map
+Updated over 1 year ago
+
+Setup
+Migration Guide - Map SDK
+Did this page help you?
+On This Page
+JavaScript Setup
+Installation
+Import
+Python Setup
+Installation
+Import
+Products
+Places
+Studio
+Movement SDK
+Places API
+UGC APIs
+Discovery APIs
+Attribution
+Audience
+Proximity
+Business Listings
+City Guide
+Swarm App
+Developer
+Developer Docs
+Developer Community
+Developer Console
+Developer Blog
+Legal
+Privacy Center
+Cookie Policy
+Your Privacy Choices
+Other Terms & Policies
+Resources
+Blog
+Podcast
+Glossary
+Case Studies
+Events and Webinars
+Reports and Insights
+Videos and Demos
+Company
+Who We Are
+Leadership
+Careers
+Our Culture
+Become a Partner
+Foursquare For Good
+Press Coverage
+Press Kit
+Contact Us
+© 2024 Foursquare. All rights reserved.
+
+Linkedin
+
+
+
+
+
+
