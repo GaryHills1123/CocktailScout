@@ -59,12 +59,61 @@ export interface FoursquareResponse {
 }
 
 export class FoursquareService {
-  private readonly apiKey: string;
+  private readonly apiKey?: string;
+  private readonly clientId?: string;
+  private readonly clientSecret?: string;
   private readonly baseUrl = 'https://api.foursquare.com/v3';
+  private accessToken?: string;
+  private tokenExpiry?: number;
 
-  constructor(apiKey: string) {
-    // Ensure API key has fsq3 prefix for v3 API
-    this.apiKey = apiKey.startsWith('fsq3') ? apiKey : `fsq3${apiKey}`;
+  constructor(apiKey?: string, clientId?: string, clientSecret?: string) {
+    if (apiKey) {
+      // Service API Key approach
+      this.apiKey = apiKey.startsWith('fsq3') ? apiKey : `fsq3${apiKey}`;
+    } else if (clientId && clientSecret) {
+      // OAuth approach
+      this.clientId = clientId;
+      this.clientSecret = clientSecret;
+    } else {
+      throw new Error('Either apiKey or clientId+clientSecret must be provided');
+    }
+  }
+
+  private async getAccessToken(): Promise<string> {
+    if (!this.clientId || !this.clientSecret) {
+      throw new Error('OAuth credentials not configured');
+    }
+
+    // Check if we have a valid token
+    if (this.accessToken && this.tokenExpiry && Date.now() < this.tokenExpiry) {
+      return this.accessToken;
+    }
+
+    console.log('Getting OAuth access token...');
+    
+    const response = await fetch('https://foursquare.com/oauth2/access_token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+        grant_type: 'client_credentials'
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`OAuth token request failed: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    this.accessToken = data.access_token;
+    // Set expiry to 1 hour from now (default for client credentials)
+    this.tokenExpiry = Date.now() + (3600 * 1000);
+    
+    console.log('OAuth access token obtained successfully');
+    return this.accessToken;
   }
 
   private async makeRequest(endpoint: string, params: Record<string, string> = {}): Promise<any> {
@@ -75,9 +124,19 @@ export class FoursquareService {
 
     console.log('Making Foursquare v3 API request to:', url.toString());
 
+    let authHeader: string;
+    if (this.apiKey) {
+      // Service API Key
+      authHeader = this.apiKey;
+    } else {
+      // OAuth token
+      const token = await this.getAccessToken();
+      authHeader = `Bearer ${token}`;
+    }
+
     const response = await fetch(url.toString(), {
       headers: {
-        'Authorization': this.apiKey,
+        'Authorization': authHeader,
         'Accept': 'application/json',
       },
     });

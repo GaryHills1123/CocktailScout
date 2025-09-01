@@ -25,10 +25,26 @@ export class MemStorage implements IStorage {
     this.users = new Map();
     this.cafes = new Map();
     
-    // Initialize Foursquare service if API key is available
+    // Initialize Foursquare service using OAuth credentials
+    const clientId = process.env.FOURSQUARE_CLIENT_ID;
+    const clientSecret = process.env.FOURSQUARE_CLIENT_SECRET;
     const apiKey = process.env.FOURSQUARE_API_KEY;
+    
+    console.log('Foursquare OAuth Client ID loaded:', clientId ? `${clientId.substring(0, 10)}...` : 'No client ID found');
+    console.log('Foursquare OAuth Client Secret loaded:', clientSecret ? `${clientSecret.substring(0, 10)}...` : 'No client secret found');
     console.log('Foursquare API key loaded:', apiKey ? `${apiKey.substring(0, 10)}...` : 'No key found');
-    this.foursquareService = apiKey ? new FoursquareService(apiKey) : null;
+    
+    // Try OAuth first, fallback to Service API key
+    if (clientId && clientSecret) {
+      this.foursquareService = new FoursquareService(undefined, clientId, clientSecret);
+      console.log('Using Foursquare OAuth authentication');
+    } else if (apiKey) {
+      this.foursquareService = new FoursquareService(apiKey);
+      console.log('Using Foursquare Service API key authentication');
+    } else {
+      this.foursquareService = null;
+      console.log('No Foursquare credentials available');
+    }
     
     // Seed with sample data initially - real data will be loaded on first request  
     this.seedCafes();
