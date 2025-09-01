@@ -1,0 +1,6 @@
+☕️ vibecode — best coffee in Hamilton
+
+vibecode is a map + list that ranks Hamilton cafés by **vibe score**.  
+it mixes ratings, reviews, price fairness & coffee-nerd words like *roaster* and *pour over*.  
+no logins, no tracking, just vibes.  
+run it → zoom the map → find your next latte spot. 🚀
