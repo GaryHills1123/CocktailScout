@@ -56,7 +56,7 @@ export class MemStorage implements IStorage {
         address: "456 King Street W, Hamilton, ON",
         neighborhood: "Westdale Village",
         latitude: 43.2601,
-        longitude: -79.9311,
+        longitude: -79.9200,
         rating: 4.4,
         reviewCount: 95,
         priceLevel: "$$",
