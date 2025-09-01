@@ -1,6 +1,7 @@
 import { type User, type InsertUser, type Cafe, type InsertCafe } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { calculateVibeScore } from "../client/src/lib/vibe-calculator";
+import { FoursquareService } from "./foursquare-service.js";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -17,10 +18,18 @@ export interface IStorage {
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private cafes: Map<string, Cafe>;
+  private foursquareService: FoursquareService | null;
+  private isDataLoaded: boolean = false;
 
   constructor() {
     this.users = new Map();
     this.cafes = new Map();
+    
+    // Initialize Foursquare service if API key is available
+    const apiKey = process.env.FOURSQUARE_API_KEY;
+    this.foursquareService = apiKey ? new FoursquareService(apiKey) : null;
+    
+    // Seed with sample data initially - real data will be loaded on first request
     this.seedCafes();
   }
 
@@ -196,6 +205,26 @@ export class MemStorage implements IStorage {
   }
 
   async getCafes(): Promise<Cafe[]> {
+    // If we have Foursquare service and haven't loaded real data yet, fetch it
+    if (this.foursquareService && !this.isDataLoaded) {
+      try {
+        console.log('Loading real coffee shop data from Foursquare...');
+        const realCafes = await this.foursquareService.getCoffeeShopsForHamilton();
+        
+        if (realCafes.length > 0) {
+          // Clear existing data and add real data
+          this.cafes.clear();
+          realCafes.forEach(cafe => {
+            this.cafes.set(cafe.id, cafe);
+          });
+          this.isDataLoaded = true;
+          console.log(`Loaded ${realCafes.length} real coffee shops from Foursquare`);
+        }
+      } catch (error) {
+        console.error('Failed to load real data, using sample data:', error);
+      }
+    }
+    
     return Array.from(this.cafes.values()).sort((a, b) => b.vibeScore - a.vibeScore);
   }
 
