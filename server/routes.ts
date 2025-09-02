@@ -7,8 +7,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all cafes
   app.get("/api/cafes", async (req, res) => {
     try {
-      const latitude = req.query.lat ? parseFloat(req.query.lat as string) : undefined;
-      const longitude = req.query.lng ? parseFloat(req.query.lng as string) : undefined;
+      const latitude = req.query.lat ? parseFloat(req.query.lat as string) : 
+                      req.query.latitude ? parseFloat(req.query.latitude as string) : undefined;
+      const longitude = req.query.lng ? parseFloat(req.query.lng as string) : 
+                       req.query.longitude ? parseFloat(req.query.longitude as string) : undefined;
       
       const cafes = await storage.getCafes(latitude, longitude);
       res.json(cafes);
@@ -22,8 +24,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/cafes/search", async (req, res) => {
     try {
       const query = req.query.q as string || "";
-      const latitude = req.query.lat ? parseFloat(req.query.lat as string) : undefined;
-      const longitude = req.query.lng ? parseFloat(req.query.lng as string) : undefined;
+      const latitude = req.query.lat ? parseFloat(req.query.lat as string) : 
+                       req.query.latitude ? parseFloat(req.query.latitude as string) : undefined;
+      const longitude = req.query.lng ? parseFloat(req.query.lng as string) : 
+                        req.query.longitude ? parseFloat(req.query.longitude as string) : undefined;
       
       const cafes = await storage.searchCafes(query, latitude, longitude);
       res.json(cafes);
