@@ -115,6 +115,7 @@ export default function Home() {
           <MapView 
             cafes={cafes || []} 
             isLoading={isLoading} 
+            onCafeClick={handleCafeClick}
             userLocation={latitude && longitude ? { latitude, longitude } : undefined}
           />
         </div>

@@ -5,13 +5,14 @@ import "leaflet/dist/leaflet.css";
 interface MapViewProps {
   cafes: Cafe[];
   isLoading: boolean;
+  onCafeClick?: (cafeId: string) => void;
   userLocation?: {
     latitude: number;
     longitude: number;
   };
 }
 
-export function MapView({ cafes, isLoading, userLocation }: MapViewProps) {
+export function MapView({ cafes, isLoading, onCafeClick, userLocation }: MapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
@@ -59,6 +60,17 @@ export function MapView({ cafes, isLoading, userLocation }: MapViewProps) {
       }
     };
   }, []);
+
+  // Set up global callback for popup buttons
+  useEffect(() => {
+    if (onCafeClick) {
+      (window as any).openCafeDetails = onCafeClick;
+    }
+    
+    return () => {
+      delete (window as any).openCafeDetails;
+    };
+  }, [onCafeClick]);
 
   // Add markers when map is ready and we have cafes
   useEffect(() => {
@@ -128,6 +140,25 @@ export function MapView({ cafes, isLoading, userLocation }: MapViewProps) {
             </div>
             <div style="margin: 4px 0; font-size: 13px; color: #666;">
               ${cafe.priceLevel} • ⭐ ${cafe.rating} (${cafe.reviewCount} reviews)
+            </div>
+            <div style="margin-top: 8px; text-align: center;">
+              <button 
+                onclick="window.openCafeDetails('${cafe.id}')"
+                style="
+                  background: var(--primary, #8B5CF6); 
+                  color: white; 
+                  border: none; 
+                  padding: 6px 12px; 
+                  border-radius: 6px; 
+                  cursor: pointer; 
+                  font-size: 12px;
+                  font-weight: 500;
+                "
+                onmouseover="this.style.opacity='0.9'"
+                onmouseout="this.style.opacity='1'"
+              >
+                View Details
+              </button>
             </div>
           </div>
         `);
