@@ -206,7 +206,7 @@ export class MemStorage implements IStorage {
     ];
 
     sampleCafes.forEach(cafe => {
-      const vibeScore = calculateVibeScore(cafe.rating, cafe.reviewCount, cafe.priceLevel, cafe.tags || []);
+      const vibeScore = calculateVibeScore(cafe.rating, cafe.reviewCount, cafe.priceLevel, cafe.tags || [], cafe.name);
       this.cafes.set(cafe.id, { ...cafe, vibeScore, imageUrl: cafe.imageUrl || null, openingHours: cafe.openingHours || {} });
     });
   }
@@ -365,7 +365,7 @@ export class MemStorage implements IStorage {
 
   async createCafe(insertCafe: InsertCafe): Promise<Cafe> {
     const id = insertCafe.id || randomUUID();
-    const vibeScore = calculateVibeScore(insertCafe.rating, insertCafe.reviewCount, insertCafe.priceLevel, insertCafe.tags || []);
+    const vibeScore = calculateVibeScore(insertCafe.rating, insertCafe.reviewCount, insertCafe.priceLevel, insertCafe.tags || [], insertCafe.name);
     const cafe: Cafe = { ...insertCafe, id, vibeScore, imageUrl: insertCafe.imageUrl || null, openingHours: insertCafe.openingHours || {} };
     this.cafes.set(id, cafe);
     return cafe;
@@ -381,7 +381,8 @@ export class MemStorage implements IStorage {
         updatedCafe.rating,
         updatedCafe.reviewCount,
         updatedCafe.priceLevel,
-        Array.isArray(updatedCafe.tags) ? updatedCafe.tags : []
+        Array.isArray(updatedCafe.tags) ? updatedCafe.tags : [],
+        updatedCafe.name
       );
     }
     

@@ -2,7 +2,8 @@ export function calculateVibeScore(
   rating: number, 
   reviewCount: number, 
   priceLevel: string, 
-  tags: string[]
+  tags: string[],
+  name?: string
 ): number {
   // Base score from rating (0-60 points) - increased weight for quality
   // Handle both 5-point and 10-point scales
@@ -14,8 +15,8 @@ export function calculateVibeScore(
     ratingScore += 5; // Excellence bonus
   }
   
-  // Review count score (0-15 points) - reduced weight, easier to max out
-  const reviewScore = Math.min(reviewCount / 50 * 15, 15);
+  // Review count score (0-10 points) - further reduced weight for quality over quantity
+  const reviewScore = Math.min(reviewCount / 40 * 10, 10);
   
   // Price level score (0-15 points) - $$ is optimal
   const priceScores: Record<string, number> = { 
@@ -26,7 +27,7 @@ export function calculateVibeScore(
   };
   const priceScore = priceScores[priceLevel] || 0;
   
-  // Coffee keyword bonus (0-20 points) - increased for specialty focus
+  // Coffee keyword bonus (0-25 points) - increased for specialty focus
   const coffeeKeywords = [
     "Single Origin", "Pour Over", "Artisan Roasted", "Specialty Drinks",
     "Local Roaster", "Espresso Bar", "French Press", "Cold Brew",
@@ -36,9 +37,20 @@ export function calculateVibeScore(
   const keywordMatches = tags.filter(tag => 
     coffeeKeywords.some(keyword => tag.includes(keyword))
   ).length;
-  const keywordScore = Math.min(keywordMatches * 5, 20);
+  let keywordScore = Math.min(keywordMatches * 5, 25);
   
-  const totalScore = ratingScore + reviewScore + priceScore + keywordScore;
+  // Specialty establishment bonus (0-10 points) - boost for espresso bars and artisan cafes
+  let specialtyBonus = 0;
+  if (name) {
+    const nameLower = name.toLowerCase();
+    if (nameLower.includes('espresso bar') || nameLower.includes('coffee co')) {
+      specialtyBonus += 8; // Strong specialty indicator
+    } else if (nameLower.includes('espresso') || nameLower.includes('roaster') || nameLower.includes('coffee house')) {
+      specialtyBonus += 5; // Moderate specialty indicator
+    }
+  }
+  
+  const totalScore = ratingScore + reviewScore + priceScore + keywordScore + specialtyBonus;
   return Math.round(Math.min(totalScore, 100));
 }
 

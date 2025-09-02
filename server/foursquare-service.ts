@@ -224,7 +224,7 @@ export class FoursquareService {
     const finalTags = tags.length > 0 ? tags : ['Coffee'];
     
     // Calculate vibe score
-    const vibeScore = calculateVibeScore(rating, reviewCount, priceLevel, finalTags);
+    const vibeScore = calculateVibeScore(rating, reviewCount, priceLevel, finalTags, venue.name);
 
     return {
       id: venue.fsq_place_id,
