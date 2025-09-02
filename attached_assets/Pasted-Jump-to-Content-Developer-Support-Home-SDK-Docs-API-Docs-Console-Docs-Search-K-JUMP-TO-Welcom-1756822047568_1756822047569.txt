@@ -1,0 +1,376 @@
+Jump to Content
+Developer
+Support
+Home
+SDK Docs
+API Docs
+❯ Console Docs
+
+Search
+⌘K
+JUMP TO
+⌘/
+Welcome
+Places API
+Users API
+Geofences API
+Studio Data API
+Measurement API
+Targeting API
+Merchant API
+Places API (depr)
+Overview
+Get Started
+Places API Demos
+
+API Usage
+
+Endpoints
+
+Search & Data
+
+Geotagging & Check-in
+
+Find Nearby Places
+get
+Report Nearby Place Selection
+post
+Autocomplete
+
+Address Data
+
+Places Feedback
+
+FAQs
+
+Release Notes - Places API
+Personalization APIs (depr)
+
+Find Nearby Places
+get
+https://api.foursquare.com/v3/places/nearby
+Utilize Foursquare's Snap to Place technology to detect where your user's device is and what is around them.
+The endpoint is designed to provide POI tagging that supports a check-in use case. It will intentionally return lower quality results not found in Place Search. It is not intended to replace Place Search as the primary way to search for top, recommended POIs.
+
+Query Params
+fields
+string
+Indicate which fields to return in the response, separated by commas. If no fields are specified, all Core Fields are returned by default.
+
+For a complete list of returnable fields, refer to the Response Fields page.
+
+ll
+string
+The latitude/longitude around which to retrieve place information. This must be specified as latitude,longitude (e.g., ll=41.8781,-87.6298). If you do not specify ll, the server will attempt to retrieve the IP address from the request, and geolocate that IP address.
+
+hacc
+double
+The estimated horizontal accuracy radius in meters of the user’s location at the 68th percentile confidence level as returned by the user’s cell phone OS.
+
+altitude
+double
+The altitude of the user’s location in meters above the World Geodetic System 1984 (WGS84) reference ellipsoid as returned by the user’s cell phone OS.
+
+query
+string
+A string to be matched against venue name for this place.
+
+limit
+int32
+1 to 50
+The number of results to return, up to 50. Defaults to 10.
+
+Response
+
+200
+success
+
+Response body
+object
+results
+array of objects
+object
+fsq_id
+string
+categories
+array of objects
+object
+id
+int32
+name
+string
+short_name
+string
+plural_name
+string
+icon
+object
+
+icon object
+chains
+array of objects
+object
+id
+string
+name
+string
+closed_bucket
+string
+date_closed
+date
+description
+string
+distance
+int32
+email
+string
+fax
+string
+features
+object
+
+features object
+geocodes
+object
+
+geocodes object
+hours
+object
+
+hours object
+hours_popular
+array of objects
+object
+close
+string
+day
+int32
+open
+string
+link
+string
+location
+object
+
+location object
+menu
+string
+name
+string
+photos
+array of objects
+object
+id
+string
+created_at
+date-time
+prefix
+string
+suffix
+string
+width
+int32
+height
+int32
+classifications
+array of strings
+tip
+object
+
+tip object
+popularity
+double
+price
+int32
+rating
+double
+related_places
+object
+
+related_places object
+social_media
+object
+
+social_media object
+stats
+object
+
+stats object
+store_id
+string
+tastes
+array of strings
+tel
+string
+timezone
+string
+tips
+array of objects
+object
+id
+string
+created_at
+date-time
+text
+string
+url
+string
+photo
+string
+lang
+string
+agree_count
+int32
+disagree_count
+int32
+venue_reality_bucket
+string
+verified
+boolean
+website
+string
+Updated almost 2 years ago
+
+Geotagging & Check-in
+Report Nearby Place Selection
+Did this page help you?
+Language
+
+Shell
+
+Node
+
+Ruby
+
+PHP
+
+Python
+Credentials
+Header
+fsq3SBfFLNf27IIXVmcWKvwESQdTQcDt1NnNkz8v3ZksfVs=
+1
+curl --request GET \
+2
+     --url https://api.foursquare.com/v3/places/nearby \
+3
+     --header 'Authorization: fsq3SBfFLNf27IIXVmcWKvwESQdTQcDt1NnNkz8v3ZksfVs=' \
+4
+     --header 'accept: application/json'
+
+Try It!
+RESPONSE
+1
+{
+2
+  "results": [
+3
+    {
+4
+      "fsq_id": "string",
+5
+      "categories": [
+6
+        {
+7
+          "id": 0,
+8
+          "name": "string",
+9
+          "short_name": "string",
+10
+          "plural_name": "string",
+11
+          "icon": {
+12
+            "id": "string",
+13
+            "created_at": "2025-09-02T14:06:51.054Z",
+14
+            "prefix": "string",
+15
+            "suffix": "string",
+16
+            "width": 0,
+17
+            "height": 0,
+18
+            "classifications": [
+19
+              "string"
+20
+            ],
+21
+            "tip": {
+22
+              "id": "string",
+23
+              "created_at": "2025-09-02T14:06:51.054Z",
+24
+              "text": "string",
+25
+              "url": "string",
+26
+              "lang": "string",
+27
+              "agree_count": 0,
+28
+              "disagree_count": 0
+29
+            }
+30
+          }
+31
+        }
+32
+      ],
+
+Products
+Places
+Studio
+Movement SDK
+Places API
+UGC APIs
+Discovery APIs
+Attribution
+Audience
+Proximity
+Business Listings
+City Guide
+Swarm App
+Developer
+Developer Docs
+Developer Community
+Developer Console
+Developer Blog
+Legal
+Privacy Center
+Cookie Policy
+Your Privacy Choices
+Other Terms & Policies
+Resources
+Blog
+Podcast
+Glossary
+Case Studies
+Events and Webinars
+Reports and Insights
+Videos and Demos
+Company
+Who We Are
+Leadership
+Careers
+Our Culture
+Become a Partner
+Foursquare For Good
+Press Coverage
+Press Kit
+Contact Us
+© 2024 Foursquare. All rights reserved.
+
+Linkedin
+
+
+
+
+
+
