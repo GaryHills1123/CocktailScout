@@ -1,7 +1,7 @@
 import type { Cafe } from '../shared/schema.js';
 
 export interface FoursquareVenue {
-  fsq_id: string;
+  fsq_place_id: string;
   name: string;
   location: {
     address?: string;
@@ -10,7 +10,7 @@ export interface FoursquareVenue {
     postcode?: string;
     country?: string;
     formatted_address?: string;
-    geocodes: {
+    geocodes?: {
       main: {
         latitude: number;
         longitude: number;
@@ -62,14 +62,14 @@ export class FoursquareService {
   private readonly apiKey?: string;
   private readonly clientId?: string;
   private readonly clientSecret?: string;
-  private readonly baseUrl = 'https://api.foursquare.com/v3';
+  private readonly baseUrl = 'https://places-api.foursquare.com';
   private accessToken?: string;
   private tokenExpiry?: number;
 
   constructor(apiKey?: string, clientId?: string, clientSecret?: string) {
     if (apiKey) {
-      // Service API Key approach
-      this.apiKey = apiKey.startsWith('fsq3') ? apiKey : `fsq3${apiKey}`;
+      // Service API Key approach - new API keys don't need fsq3 prefix
+      this.apiKey = apiKey;
     } else if (clientId && clientSecret) {
       // OAuth approach
       this.clientId = clientId;
@@ -137,6 +137,7 @@ export class FoursquareService {
     const response = await fetch(url.toString(), {
       headers: {
         'Authorization': authHeader,
+        'X-Places-Api-Version': '2025-06-17',
         'Accept': 'application/json',
       },
     });
@@ -155,12 +156,11 @@ export class FoursquareService {
     limit: number = 50
   ): Promise<FoursquareVenue[]> {
     const params = {
-      categories: '13035,13038', // Coffee shop and Cafe categories for v3
+      query: 'coffee',
       ll: `${latitude},${longitude}`,
       radius: radius.toString(),
       limit: limit.toString(),
-      fields: 'name,location,categories,rating,stats,price,photos,website,tel,hours,tips',
-      sort: 'RELEVANCE'
+      fields: 'fsq_place_id,name,location,rating,price,stats'
     };
 
     const response: FoursquareResponse = await this.makeRequest('/places/search', params);
@@ -222,12 +222,12 @@ export class FoursquareService {
     else if (addressLower.includes('locke')) neighborhood = 'Locke Street';
 
     return {
-      id: venue.fsq_id,
+      id: venue.fsq_place_id,
       name: venue.name,
       address: address,
       neighborhood: neighborhood,
-      latitude: venue.location.geocodes.main.latitude,
-      longitude: venue.location.geocodes.main.longitude,
+      latitude: venue.location.geocodes?.main?.latitude || 43.2557,
+      longitude: venue.location.geocodes?.main?.longitude || -79.8711,
       rating: venue.rating || 0,
       reviewCount: venue.stats?.total_ratings || 0,
       priceLevel: venue.price === 1 ? '$' : venue.price === 3 ? '$$$' : venue.price === 4 ? '$$$$' : '$$',

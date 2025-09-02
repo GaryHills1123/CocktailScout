@@ -6,7 +6,7 @@ interface VibeScoreRingProps {
 export function VibeScoreRing({ score, size = 48 }: VibeScoreRingProps) {
   const radius = 18;
   const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (score / 100) * circumference;
+  const strokeDashoffset = isNaN(score) ? circumference : circumference - (score / 100) * circumference;
 
   return (
     <div className="relative" style={{ width: size, height: size }}>
@@ -37,7 +37,7 @@ export function VibeScoreRing({ score, size = 48 }: VibeScoreRingProps) {
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
         <span className="text-xs font-bold" data-testid={`text-vibe-score-${score}`}>
-          {score}
+          {isNaN(score) ? '0' : score}
         </span>
       </div>
     </div>

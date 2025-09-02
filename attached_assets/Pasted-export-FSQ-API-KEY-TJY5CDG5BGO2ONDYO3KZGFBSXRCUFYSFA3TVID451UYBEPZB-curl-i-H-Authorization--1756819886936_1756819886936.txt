@@ -1,0 +1,27 @@
+export FSQ_API_KEY='TJY5CDG5BGO2ONDYO3KZGFBSXRCUFYSFA3TVID451UYBEPZB'
+curl -i \
+  -H "Authorization: Bearer $FSQ_API_KEY" \
+  -H "X-Places-Api-Version: 2025-06-17" \
+  -H "Accept: application/json" \
+  "https://places-api.foursquare.com/places/search?query=coffee&ll=43.2557,-79.8711&limit=5&fields=fsq_place_id,name,location,rating,price,stats"
+
+HTTP/2 200 
+content-type: application/json; charset=utf-8
+link: <https://places-api.foursquare.com/places/search?query=coffee&cursor=c3I6NQ&ll=43.2557%2C-79.8711&fields=fsq_place_id%2Cname%2Clocation%2Crating%2Cprice%2Cstats&limit=5>; rel="next"
+server: Finatra
+x-fsq-request-id: 68b6f0e95648fb5a3bfbd9f4
+x-ratelimit-path: /v3/places/search
+x-ratelimit-limit: 180000
+x-ratelimit-reset: 1756821302
+x-ratelimit-remaining: 179995
+accept-ranges: bytes
+date: Tue, 02 Sep 2025 13:28:09 GMT
+via: 1.1 varnish
+x-served-by: cache-yul1970034-YUL
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1756819690.685936,VS0,VE182
+vary: Origin
+content-length: 1811
+
+{"results":[{"fsq_place_id":"4b561230f964a520e1fe27e3","location":{"address":"2 King St W","locality":"Hamilton","region":"ON","postcode":"L8R 1M5","country":"CA","formatted_address":"2 King St W (in Jackson Square (100 King St W)), Hamilton ON L8R 1M5"},"name":"P.A.M.'s Coffee & Tea Co.","price":1,"rating":7.1,"stats":{"total_photos":2,"total_ratings":10,"total_tips":11}},{"fsq_place_id":"4db6f5aa5da3a76f44711195","location":{"address":"35 York Blvd","locality":"Hamilton","region":"ON","postcode":"L8R 3K7","country":"CA","formatted_address":"35 York Blvd, Hamilton ON L8R 3K7"},"name":"Red Hill Coffee Trade","price":1,"rating":7.2,"stats":{"total_photos":11,"total_ratings":8,"total_tips":3}},{"fsq_place_id":"58f6836a121384665521cfde","location":{"address":"68 King St E","locality":"Hamilton","region":"ON","postcode":"L8N 1A6","country":"CA","formatted_address":"68 King St E, Hamilton ON L8N 1A6"},"name":"Redchurch Cafe + Gallery","price":1,"rating":6.9,"stats":{"total_photos":20,"total_ratings":15,"total_tips":6}},{"fsq_place_id":"54cbb92b498ec28817437edb","location":{"address":"170 James St N","locality":"Hamilton","region":"ON","postcode":"L8R 2L1","country":"CA","formatted_address":"170 James St N (Cannon), Hamilton ON L8R 2L1"},"name":"Saint James Espresso Bar & Eatery","price":1,"rating":8.8,"stats":{"total_photos":24,"total_ratings":28,"total_tips":5}},{"fsq_place_id":"4ebf3c464690d2338921a00e","location":{"address":"11 Hess Street.","locality":"Hamilton","region":"ON","postcode":"L8P 3M7","country":"CA","formatted_address":"11 Hess Street., Hamilton ON L8P 3M7"},"name":"ViSo Hess Village","price":1,"rating":7.9,"stats":{"total_photos":7,"total_ratings":9,"total_tips":5}}],"context":{"geo_bounds":{"circle":{"center":{"latitude":43.2557,"longitude":-79.8711},"radius":2194}}}}%                                                                              garyhills@Mac dev % 
