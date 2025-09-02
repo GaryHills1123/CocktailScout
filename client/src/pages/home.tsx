@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { MapView } from "@/components/map-view";
 import { CafeList } from "@/components/cafe-list";
 import { useCafes } from "@/hooks/use-cafes";
-import { Search, Map, List, MapPin, AlertCircle, Loader2 } from "lucide-react";
+import { Map, List, MapPin, AlertCircle, Loader2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useGeolocation } from "@/hooks/use-geolocation";
 
 export default function Home() {
-  const [searchQuery, setSearchQuery] = useState("");
   const [currentView, setCurrentView] = useState<"map" | "list">("map");
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [sortBy, setSortBy] = useState("vibe");
@@ -23,7 +21,6 @@ export default function Home() {
   }, []);
   
   const { data: cafes, isLoading, error } = useCafes({ 
-    searchQuery: searchQuery || undefined, 
     latitude: latitude || undefined, 
     longitude: longitude || undefined 
   });
@@ -99,46 +96,6 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Search Bar */}
-      <div className="sticky top-0 z-20 search-floating border-b border-border">
-        <div className="container mx-auto px-4 py-3">
-          <div className="relative">
-            <Input
-              type="text"
-              placeholder="Search cafés by name or neighborhood (e.g., 'Tim Hortons', 'Downtown', 'Locke Street')..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 bg-card border-border"
-              data-testid="input-search"
-            />
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                data-testid="button-clear-search"
-              >
-                ✕
-              </button>
-            )}
-          </div>
-          {searchQuery && (
-            <div className="mt-2 text-sm text-muted-foreground">
-              {cafes && cafes.length > 0 ? (
-                <span>
-                  Found <strong>{cafes.length}</strong> café{cafes.length !== 1 ? 's' : ''} matching "{searchQuery}"
-                </span>
-              ) : isLoading ? (
-                <span>Searching...</span>
-              ) : (
-                <span className="text-amber-600">
-                  No cafés found for "{searchQuery}". Try searching for names like "Grind" or "Mulberry", neighborhoods like "Downtown" or "Westdale", or tags like "Pour Over" or "Study Friendly".
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
 
       {/* Main Content */}
       <div className="flex flex-col lg:flex-row">
