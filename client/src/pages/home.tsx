@@ -105,7 +105,7 @@ export default function Home() {
           <div className="relative">
             <Input
               type="text"
-              placeholder="Search cafés by name, neighborhood, or tags (e.g., 'Pour Over', 'Westdale', 'Study Friendly')..."
+              placeholder="Search cafés by name or neighborhood (e.g., 'Tim Hortons', 'Downtown', 'Locke Street')..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 bg-card border-border"
