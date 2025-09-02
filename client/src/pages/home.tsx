@@ -32,7 +32,7 @@ export default function Home() {
     setCurrentView(currentView === "map" ? "list" : "map");
   };
 
-  const filters = ["All", "Open Now", "Study Spots", "Outdoor Seating"];
+  const filters = ["All", "Open Now"];
 
   if (error) {
     return (
