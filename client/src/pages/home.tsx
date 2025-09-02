@@ -61,7 +61,7 @@ export default function Home() {
               <img 
                 src={cafeScoutLogo} 
                 alt="CafeScout Logo" 
-                className="w-8 h-8 object-contain"
+                className="w-10 h-10 object-contain"
               />
               <div>
                 <h1 className="text-xl font-serif font-semibold text-black" data-testid="title-app">CaféScout</h1>
