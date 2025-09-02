@@ -3,6 +3,8 @@ import type { Cafe } from '../shared/schema.js';
 export interface FoursquareVenue {
   fsq_place_id: string;
   name: string;
+  latitude?: number;
+  longitude?: number;
   location: {
     address?: string;
     locality?: string;
@@ -10,12 +12,6 @@ export interface FoursquareVenue {
     postcode?: string;
     country?: string;
     formatted_address?: string;
-    geocodes?: {
-      main: {
-        latitude: number;
-        longitude: number;
-      };
-    };
   };
   categories: Array<{
     id: number;
@@ -160,7 +156,7 @@ export class FoursquareService {
       ll: `${latitude},${longitude}`,
       radius: radius.toString(),
       limit: limit.toString(),
-      fields: 'fsq_place_id,name,location,rating,price,stats'
+      fields: 'fsq_place_id,name,location,latitude,longitude,rating,price,stats'
     };
 
     const response: FoursquareResponse = await this.makeRequest('/places/search', params);
@@ -226,8 +222,8 @@ export class FoursquareService {
       name: venue.name,
       address: address,
       neighborhood: neighborhood,
-      latitude: venue.location.geocodes?.main?.latitude || 43.2557,
-      longitude: venue.location.geocodes?.main?.longitude || -79.8711,
+      latitude: venue.latitude || 43.2557,
+      longitude: venue.longitude || -79.8711,
       rating: venue.rating || 0,
       reviewCount: venue.stats?.total_ratings || 0,
       priceLevel: venue.price === 1 ? '$' : venue.price === 3 ? '$$$' : venue.price === 4 ? '$$$$' : '$$',

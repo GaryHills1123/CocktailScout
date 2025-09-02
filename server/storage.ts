@@ -20,6 +20,8 @@ export class MemStorage implements IStorage {
   private cafes: Map<string, Cafe>;
   private foursquareService: FoursquareService | null;
   private isDataLoaded: boolean = false;
+  private lastDataFetch: number = 0;
+  private cacheExpiry: number = 1000 * 60 * 60; // 1 hour cache
 
   constructor() {
     this.users = new Map();
@@ -224,8 +226,13 @@ export class MemStorage implements IStorage {
   }
 
   async getCafes(): Promise<Cafe[]> {
-    // If we have Foursquare service and haven't loaded real data yet, fetch it
-    if (this.foursquareService && !this.isDataLoaded) {
+    const now = Date.now();
+    
+    // Check if we need to fetch fresh data (first time or cache expired)  
+    const shouldFetchData = this.foursquareService && 
+      (!this.isDataLoaded || (now - this.lastDataFetch > this.cacheExpiry));
+    
+    if (shouldFetchData) {
       try {
         console.log('Loading real coffee shop data from Foursquare...');
         const realCafes = await this.foursquareService.getCoffeeShopsForHamilton();
@@ -238,6 +245,7 @@ export class MemStorage implements IStorage {
             this.cafes.set(cafe.id, cafe);
           });
           this.isDataLoaded = true;
+          this.lastDataFetch = now;
           console.log(`Successfully loaded ${realCafes.length} real coffee shops from Foursquare`);
         } else {
           console.log('No cafes returned from Foursquare, keeping sample data');
@@ -246,6 +254,8 @@ export class MemStorage implements IStorage {
         console.error('Failed to load real data, using sample data:', error);
         console.error('Error details:', error.message || error);
       }
+    } else if (this.isDataLoaded) {
+      console.log('Using cached coffee shop data (no API call)');
     }
     
     return Array.from(this.cafes.values()).sort((a, b) => b.vibeScore - a.vibeScore);
