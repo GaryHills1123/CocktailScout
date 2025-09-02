@@ -42,8 +42,8 @@ export default function Home() {
             <div className="flex items-center space-x-3">
               <div className="text-2xl">☕️</div>
               <div>
-                <h1 className="text-xl font-serif font-semibold" data-testid="title-app">vibecode</h1>
-                <p className="text-sm opacity-90">best coffee vibes in Hamilton</p>
+                <h1 className="text-xl font-serif font-semibold" data-testid="title-app">CafeScout</h1>
+                <p className="text-sm opacity-90">best coffee vibes near you</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
