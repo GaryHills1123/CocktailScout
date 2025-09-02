@@ -14,7 +14,8 @@ import {
   DollarSign,
   X,
   ExternalLink,
-  MessageSquare
+  MessageSquare,
+  Navigation
 } from "lucide-react";
 import { type CafeDetails } from "@shared/schema";
 
@@ -28,6 +29,20 @@ export function CafeDetailModal({ cafeId, onClose }: CafeDetailModalProps) {
     queryKey: ['/api/cafes', cafeId, 'details'],
     enabled: !!cafeId,
   });
+
+  // Helper function to open directions
+  const openDirections = (lat: number, lng: number) => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+    
+    if (isIOS || isMac) {
+      // Open in Apple Maps
+      window.open(`http://maps.apple.com/?daddr=${lat},${lng}&dirflg=d`, '_blank');
+    } else {
+      // Open in Google Maps
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+    }
+  };
 
   if (!cafeId) return null;
 
@@ -158,6 +173,18 @@ export function CafeDetailModal({ cafeId, onClose }: CafeDetailModalProps) {
                       </a>
                     </div>
                   )}
+
+                  <div className="flex items-center gap-3">
+                    <Navigation className="h-4 w-4 text-muted-foreground" />
+                    <button 
+                      onClick={() => openDirections(cafeDetails.latitude, cafeDetails.longitude)}
+                      className="text-primary hover:underline flex items-center gap-1"
+                      data-testid="button-directions"
+                    >
+                      Get Directions
+                      <ExternalLink className="h-3 w-3" />
+                    </button>
+                  </div>
                 </div>
 
                 {/* Opening hours */}
