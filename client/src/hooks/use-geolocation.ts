@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 interface GeolocationState {
   latitude: number | null;
   longitude: number | null;
+  city: string | null;
   error: string | null;
   loading: boolean;
   permission: 'granted' | 'denied' | 'prompt' | 'unknown';
@@ -18,10 +19,33 @@ export function useGeolocation(options: GeolocationOptions = {}) {
   const [state, setState] = useState<GeolocationState>({
     latitude: null,
     longitude: null,
+    city: null,
     error: null,
     loading: false,
     permission: 'unknown'
   });
+
+  const reverseGeocode = async (lat: number, lng: number): Promise<string | null> => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=en`
+      );
+      const data = await response.json();
+      
+      // Extract city name from various possible fields
+      const city = data.address?.city || 
+                  data.address?.town || 
+                  data.address?.village || 
+                  data.address?.municipality ||
+                  data.address?.county ||
+                  'Unknown Location';
+      
+      return city;
+    } catch (error) {
+      console.error('Reverse geocoding failed:', error);
+      return null;
+    }
+  };
 
   const requestLocation = async () => {
     if (!navigator.geolocation) {
@@ -64,9 +88,16 @@ export function useGeolocation(options: GeolocationOptions = {}) {
         );
       });
 
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      
+      // Get city name via reverse geocoding
+      const cityName = await reverseGeocode(latitude, longitude);
+      
       setState({
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
+        latitude,
+        longitude,
+        city: cityName,
         error: null,
         loading: false,
         permission: 'granted'

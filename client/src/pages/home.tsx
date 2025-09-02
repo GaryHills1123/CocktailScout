@@ -15,7 +15,7 @@ export default function Home() {
   const [sortBy, setSortBy] = useState("vibe");
   
   const isMobile = useIsMobile();
-  const { latitude, longitude, loading: locationLoading, error: locationError, requestLocation, permission } = useGeolocation();
+  const { latitude, longitude, city, loading: locationLoading, error: locationError, requestLocation, permission } = useGeolocation();
   
   // Auto-request location on component mount
   useEffect(() => {
@@ -68,7 +68,9 @@ export default function Home() {
                     <div className="flex items-center space-x-1 text-xs opacity-75">
                       <MapPin className="w-3 h-3" />
                       <span>
-                        {cafes ? `Found ${cafes.length} cafés nearby` : 'Finding cafés near you...'}
+                        {city && cafes ? `${city} • Found ${cafes.length} cafés nearby` : 
+                         city ? `${city} • Finding cafés...` :
+                         cafes ? `Found ${cafes.length} cafés nearby` : 'Finding cafés near you...'}
                       </span>
                     </div>
                   )}
