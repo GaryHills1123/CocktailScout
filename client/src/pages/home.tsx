@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MapView } from "@/components/map-view";
 import { CafeList } from "@/components/cafe-list";
 import { useCafes } from "@/hooks/use-cafes";
-import { Search, Map, List } from "lucide-react";
+import { Search, Map, List, MapPin, AlertCircle, Loader2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useGeolocation } from "@/hooks/use-geolocation";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,7 +15,18 @@ export default function Home() {
   const [sortBy, setSortBy] = useState("vibe");
   
   const isMobile = useIsMobile();
-  const { data: cafes, isLoading, error } = useCafes(searchQuery);
+  const { latitude, longitude, loading: locationLoading, error: locationError, requestLocation, permission } = useGeolocation();
+  
+  // Auto-request location on component mount
+  useEffect(() => {
+    requestLocation();
+  }, []);
+  
+  const { data: cafes, isLoading, error } = useCafes({ 
+    searchQuery: searchQuery || undefined, 
+    latitude: latitude || undefined, 
+    longitude: longitude || undefined 
+  });
 
   const toggleView = () => {
     setCurrentView(currentView === "map" ? "list" : "map");
@@ -43,7 +55,28 @@ export default function Home() {
               <div className="text-2xl">☕️</div>
               <div>
                 <h1 className="text-xl font-serif font-semibold" data-testid="title-app">CafeScout</h1>
-                <p className="text-sm opacity-90">best coffee vibes near you</p>
+                <div className="flex items-center space-x-2">
+                  <p className="text-sm opacity-90">best coffee vibes near you</p>
+                  {/* Location Status */}
+                  {locationLoading && (
+                    <div className="flex items-center space-x-1 text-xs opacity-75">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      <span>Finding location...</span>
+                    </div>
+                  )}
+                  {latitude && longitude && !locationLoading && (
+                    <div className="flex items-center space-x-1 text-xs opacity-75">
+                      <MapPin className="w-3 h-3" />
+                      <span>Location found</span>
+                    </div>
+                  )}
+                  {locationError && !locationLoading && (
+                    <div className="flex items-center space-x-1 text-xs opacity-75">
+                      <AlertCircle className="w-3 h-3" />
+                      <span>Using Hamilton, ON</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-center space-x-2">

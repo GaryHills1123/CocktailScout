@@ -147,8 +147,8 @@ export class FoursquareService {
   }
 
   async searchCoffeeShops(
-    latitude: number = 43.2557, // Hamilton, Ontario
-    longitude: number = -79.8711,
+    latitude: number,
+    longitude: number,
     radius: number = 10000, // 10km radius
     limit: number = 50
   ): Promise<FoursquareVenue[]> {
@@ -248,11 +248,11 @@ export class FoursquareService {
     };
   }
 
-  async getCoffeeShopsForHamilton(): Promise<Cafe[]> {
+  async getCoffeeShopsForLocation(latitude: number, longitude: number): Promise<Cafe[]> {
     try {
-      console.log('Fetching coffee shops from Foursquare...');
+      console.log(`Fetching coffee shops from Foursquare for location: ${latitude}, ${longitude}`);
       
-      const venues = await this.searchCoffeeShops();
+      const venues = await this.searchCoffeeShops(latitude, longitude);
       console.log(`Found ${venues.length} venues from Foursquare`);
       
       const cafes = venues.map(venue => this.convertToCafe(venue));
@@ -265,5 +265,10 @@ export class FoursquareService {
       // Return empty array if API fails - app will fall back to any existing data
       return [];
     }
+  }
+
+  // Keep the old method for backward compatibility, defaulting to Hamilton
+  async getCoffeeShopsForHamilton(): Promise<Cafe[]> {
+    return this.getCoffeeShopsForLocation(43.2557, -79.8711);
   }
 }

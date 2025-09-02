@@ -7,7 +7,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all cafes
   app.get("/api/cafes", async (req, res) => {
     try {
-      const cafes = await storage.getCafes();
+      const latitude = req.query.lat ? parseFloat(req.query.lat as string) : undefined;
+      const longitude = req.query.lng ? parseFloat(req.query.lng as string) : undefined;
+      
+      const cafes = await storage.getCafes(latitude, longitude);
       res.json(cafes);
     } catch (error) {
       console.error("Error fetching cafes:", error);
@@ -19,7 +22,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/cafes/search", async (req, res) => {
     try {
       const query = req.query.q as string || "";
-      const cafes = await storage.searchCafes(query);
+      const latitude = req.query.lat ? parseFloat(req.query.lat as string) : undefined;
+      const longitude = req.query.lng ? parseFloat(req.query.lng as string) : undefined;
+      
+      const cafes = await storage.searchCafes(query, latitude, longitude);
       res.json(cafes);
     } catch (error) {
       console.error("Error searching cafes:", error);

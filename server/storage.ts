@@ -8,11 +8,11 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   
-  getCafes(): Promise<Cafe[]>;
+  getCafes(latitude?: number, longitude?: number): Promise<Cafe[]>;
   getCafe(id: string): Promise<Cafe | undefined>;
   createCafe(cafe: InsertCafe): Promise<Cafe>;
   updateCafe(id: string, updates: Partial<InsertCafe>): Promise<Cafe | undefined>;
-  searchCafes(query: string): Promise<Cafe[]>;
+  searchCafes(query: string, latitude?: number, longitude?: number): Promise<Cafe[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -225,8 +225,13 @@ export class MemStorage implements IStorage {
     return user;
   }
 
-  async getCafes(): Promise<Cafe[]> {
+  async getCafes(latitude?: number, longitude?: number): Promise<Cafe[]> {
     const now = Date.now();
+    
+    // Use Hamilton as default if no coordinates provided
+    const lat = latitude ?? 43.2557;
+    const lng = longitude ?? -79.8711;
+    const locationKey = `${lat.toFixed(4)},${lng.toFixed(4)}`;
     
     // Check if we need to fetch fresh data (first time or cache expired)  
     const shouldFetchData = this.foursquareService && 
@@ -234,8 +239,8 @@ export class MemStorage implements IStorage {
     
     if (shouldFetchData) {
       try {
-        console.log('Loading real coffee shop data from Foursquare...');
-        const realCafes = await this.foursquareService.getCoffeeShopsForHamilton();
+        console.log(`Loading real coffee shop data from Foursquare for location: ${lat}, ${lng}`);
+        const realCafes = await this.foursquareService.getCoffeeShopsForLocation(lat, lng);
         console.log(`Foursquare returned ${realCafes.length} cafes`);
         
         if (realCafes.length > 0) {
@@ -252,7 +257,7 @@ export class MemStorage implements IStorage {
         }
       } catch (error) {
         console.error('Failed to load real data, using sample data:', error);
-        console.error('Error details:', error.message || error);
+        console.error('Error details:', error?.message || error);
       }
     } else if (this.isDataLoaded) {
       console.log('Using cached coffee shop data (no API call)');
@@ -296,8 +301,8 @@ export class MemStorage implements IStorage {
     return finalCafe;
   }
 
-  async searchCafes(query: string): Promise<Cafe[]> {
-    const allCafes = await this.getCafes();
+  async searchCafes(query: string, latitude?: number, longitude?: number): Promise<Cafe[]> {
+    const allCafes = await this.getCafes(latitude, longitude);
     if (!query.trim()) return allCafes;
 
     const lowercaseQuery = query.toLowerCase();

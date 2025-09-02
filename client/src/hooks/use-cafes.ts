@@ -1,13 +1,35 @@
 import { useQuery } from "@tanstack/react-query";
 import { type Cafe } from "@shared/schema";
 
-export function useCafes(searchQuery?: string) {
+interface UseCafesOptions {
+  searchQuery?: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+export function useCafes(options: UseCafesOptions = {}) {
+  const { searchQuery, latitude, longitude } = options;
+  
   return useQuery<Cafe[]>({
-    queryKey: searchQuery ? ["/api/cafes/search", { q: searchQuery }] : ["/api/cafes"],
+    queryKey: searchQuery 
+      ? ["/api/cafes/search", { q: searchQuery, lat: latitude, lng: longitude }] 
+      : ["/api/cafes", { lat: latitude, lng: longitude }],
     queryFn: async () => {
+      const params = new URLSearchParams();
+      
+      if (searchQuery) {
+        params.append('q', searchQuery);
+      }
+      if (latitude !== undefined) {
+        params.append('lat', latitude.toString());
+      }
+      if (longitude !== undefined) {
+        params.append('lng', longitude.toString());
+      }
+
       const url = searchQuery 
-        ? `/api/cafes/search?q=${encodeURIComponent(searchQuery)}`
-        : "/api/cafes";
+        ? `/api/cafes/search?${params.toString()}`
+        : `/api/cafes?${params.toString()}`;
       
       const response = await fetch(url);
       if (!response.ok) {
