@@ -7,6 +7,7 @@ import { useCafes } from "@/hooks/use-cafes";
 import { Map, List, MapPin, AlertCircle, Loader2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useGeolocation } from "@/hooks/use-geolocation";
+import cafeScoutLogo from "@assets/cafescout_1756830031685.webp";
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<"map" | "list">("map");
@@ -58,7 +59,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <img 
-                src="/attached_assets/cafescout_1756830031685.webp" 
+                src={cafeScoutLogo} 
                 alt="CafeScout Logo" 
                 className="w-8 h-8 object-contain"
               />
