@@ -57,7 +57,11 @@ export default function Home() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="text-2xl">☕️</div>
+              <img 
+                src="/attached_assets/cafescout_1756830031685.webp" 
+                alt="CafeScout Logo" 
+                className="w-8 h-8 object-contain"
+              />
               <div>
                 <h1 className="text-xl font-serif font-semibold" data-testid="title-app">CafeScout</h1>
                 <div className="flex items-center space-x-2">
