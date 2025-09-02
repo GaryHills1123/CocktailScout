@@ -157,7 +157,7 @@ export class FoursquareService {
       ll: `${latitude},${longitude}`,
       radius: radius.toString(),
       limit: limit.toString(),
-      fields: 'fsq_place_id,name,location,latitude,longitude,rating,price,stats'
+      fields: 'fsq_place_id,name,location,latitude,longitude,rating,price,stats,photos'
     };
 
     const response: FoursquareResponse = await this.makeRequest('/places/search', params);
@@ -240,7 +240,7 @@ export class FoursquareService {
       vibeScore: vibeScore,
       imageUrl: venue.photos?.[0] 
         ? `${venue.photos[0].prefix}300x300${venue.photos[0].suffix}`
-        : '/placeholder-cafe.jpg',
+        : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300',
       website: venue.website || null,
       phone: venue.tel || null,
       openingHours: venue.hours?.display ? { general: venue.hours.display } : {},
