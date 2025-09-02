@@ -54,7 +54,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-primary text-primary-foreground shadow-lg relative z-10">
+      <header className="bg-white text-black shadow-lg relative z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -64,9 +64,9 @@ export default function Home() {
                 className="w-8 h-8 object-contain"
               />
               <div>
-                <h1 className="text-xl font-serif font-semibold" data-testid="title-app">CafeScout</h1>
+                <h1 className="text-xl font-serif font-semibold text-black" data-testid="title-app">CafeScout</h1>
                 <div className="flex items-center space-x-2">
-                  <p className="text-sm opacity-90">best coffee vibes near you</p>
+                  <p className="text-sm text-gray-600">best coffee vibes near you</p>
                   {/* Location Status */}
                   {locationLoading && (
                     <div className="flex items-center space-x-1 text-xs opacity-75">
@@ -98,7 +98,7 @@ export default function Home() {
                 variant="ghost"
                 size="sm"
                 onClick={toggleView}
-                className="bg-primary-foreground/20 hover:bg-primary-foreground/30 text-primary-foreground"
+                className="bg-gray-100 hover:bg-gray-200 text-black"
                 data-testid="button-view-toggle"
               >
                 {currentView === "map" ? <List className="w-4 h-4 mr-2" /> : <Map className="w-4 h-4 mr-2" />}
