@@ -1,4 +1,5 @@
 import type { Cafe } from '../shared/schema.js';
+import { calculateVibeScore } from '../client/src/lib/vibe-calculator.js';
 
 export interface FoursquareVenue {
   fsq_place_id: string;
@@ -217,6 +218,14 @@ export class FoursquareService {
     else if (addressLower.includes('stinson')) neighborhood = 'Stinson';
     else if (addressLower.includes('locke')) neighborhood = 'Locke Street';
 
+    const rating = venue.rating || 0;
+    const reviewCount = venue.stats?.total_ratings || 0;
+    const priceLevel = venue.price === 1 ? '$' : venue.price === 3 ? '$$$' : venue.price === 4 ? '$$$$' : '$$';
+    const finalTags = tags.length > 0 ? tags : ['Coffee'];
+    
+    // Calculate vibe score
+    const vibeScore = calculateVibeScore(rating, reviewCount, priceLevel, finalTags);
+
     return {
       id: venue.fsq_place_id,
       name: venue.name,
@@ -224,10 +233,11 @@ export class FoursquareService {
       neighborhood: neighborhood,
       latitude: venue.latitude || 43.2557,
       longitude: venue.longitude || -79.8711,
-      rating: venue.rating || 0,
-      reviewCount: venue.stats?.total_ratings || 0,
-      priceLevel: venue.price === 1 ? '$' : venue.price === 3 ? '$$$' : venue.price === 4 ? '$$$$' : '$$',
-      tags: tags.length > 0 ? tags : ['Coffee'], // Ensure at least one tag
+      rating: rating,
+      reviewCount: reviewCount,
+      priceLevel: priceLevel,
+      tags: finalTags,
+      vibeScore: vibeScore,
       imageUrl: venue.photos?.[0] 
         ? `${venue.photos[0].prefix}300x300${venue.photos[0].suffix}`
         : '/placeholder-cafe.jpg',

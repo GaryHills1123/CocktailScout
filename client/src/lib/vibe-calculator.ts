@@ -5,7 +5,9 @@ export function calculateVibeScore(
   tags: string[]
 ): number {
   // Base score from rating (0-50 points)
-  const ratingScore = (rating / 5) * 50;
+  // Handle both 5-point and 10-point scales
+  const normalizedRating = rating > 5 ? rating / 10 : rating / 5;
+  const ratingScore = Math.min(normalizedRating * 50, 50);
   
   // Review count score (0-20 points)
   const reviewScore = Math.min(reviewCount / 200 * 20, 20);
