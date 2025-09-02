@@ -98,6 +98,8 @@ export function useGeolocation(options: GeolocationOptions = {}) {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
       
+      console.log('User location detected:', { latitude, longitude, accuracy: position.coords.accuracy });
+      
       // Get city name via reverse geocoding
       const cityName = await reverseGeocode(latitude, longitude);
       
