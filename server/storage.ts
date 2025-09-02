@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Cafe, type InsertCafe } from "@shared/schema";
+import { type User, type InsertUser, type Cafe, type InsertCafe, type CafeDetails } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { calculateVibeScore } from "../client/src/lib/vibe-calculator";
 import { FoursquareService } from "./foursquare-service.js";
@@ -10,6 +10,7 @@ export interface IStorage {
   
   getCafes(latitude?: number, longitude?: number): Promise<Cafe[]>;
   getCafe(id: string): Promise<Cafe | undefined>;
+  getCafeDetails(id: string): Promise<CafeDetails | undefined>;
   createCafe(cafe: InsertCafe): Promise<Cafe>;
   updateCafe(id: string, updates: Partial<InsertCafe>): Promise<Cafe | undefined>;
   searchCafes(query: string, latitude?: number, longitude?: number): Promise<Cafe[]>;
@@ -18,6 +19,7 @@ export interface IStorage {
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private cafes: Map<string, Cafe>;
+  private cafeDetailsCache: Map<string, CafeDetails>;
   private foursquareService: FoursquareService | null;
   private isDataLoaded: boolean = false;
   private lastDataFetch: number = 0;
@@ -26,6 +28,7 @@ export class MemStorage implements IStorage {
   constructor() {
     this.users = new Map();
     this.cafes = new Map();
+    this.cafeDetailsCache = new Map();
     
     // Initialize Foursquare service using OAuth credentials
     const clientId = process.env.FOURSQUARE_CLIENT_ID;
@@ -268,6 +271,96 @@ export class MemStorage implements IStorage {
 
   async getCafe(id: string): Promise<Cafe | undefined> {
     return this.cafes.get(id);
+  }
+
+  async getCafeDetails(id: string): Promise<CafeDetails | undefined> {
+    // Check cache first
+    const cached = this.cafeDetailsCache.get(id);
+    if (cached) {
+      console.log('Using cached café details (no API call)');
+      return cached;
+    }
+
+    // Get basic café info
+    const basicCafe = this.cafes.get(id);
+    if (!basicCafe) {
+      return undefined;
+    }
+
+    // If no Foursquare service available, return basic details
+    if (!this.foursquareService) {
+      const basicDetails: CafeDetails = {
+        ...basicCafe,
+        photos: [],
+        reviews: [],
+        hours: null,
+        description: basicCafe.description || `Coffee shop in ${basicCafe.neighborhood}`
+      };
+      this.cafeDetailsCache.set(id, basicDetails);
+      return basicDetails;
+    }
+
+    try {
+      console.log(`Fetching detailed café info from Foursquare for: ${id}`);
+      const detailsResponse = await this.foursquareService.getCafeDetails(id);
+      
+      // Convert to CafeDetails format
+      const details = this.convertToDetailedCafe(detailsResponse, basicCafe);
+      
+      // Cache the result
+      this.cafeDetailsCache.set(id, details);
+      console.log(`Cached detailed info for café: ${basicCafe.name}`);
+      
+      return details;
+    } catch (error) {
+      console.error(`Failed to fetch details for café ${id}:`, error);
+      // Return basic details as fallback
+      const basicDetails: CafeDetails = {
+        ...basicCafe,
+        photos: [],
+        reviews: [],
+        hours: null,
+        description: basicCafe.description || `Coffee shop in ${basicCafe.neighborhood}`
+      };
+      return basicDetails;
+    }
+  }
+
+  private convertToDetailedCafe(venueDetails: any, basicCafe: Cafe): CafeDetails {
+    // Extract photos
+    const photos = venueDetails.photos?.map((photo: any) => ({
+      id: photo.id,
+      url: `${photo.prefix}600x400${photo.suffix}`,
+      width: 600,
+      height: 400
+    })) || [];
+
+    // Extract reviews/tips
+    const reviews = venueDetails.tips?.map((tip: any) => ({
+      text: tip.text,
+      date: tip.created_at
+    })) || [];
+
+    // Extract opening hours
+    const hours = venueDetails.hours ? {
+      display: venueDetails.hours.display,
+      openNow: venueDetails.hours.open_now,
+      periods: venueDetails.hours.regular?.map((period: any) => ({
+        day: period.day,
+        open: period.open,
+        close: period.close
+      }))
+    } : null;
+
+    return {
+      ...basicCafe,
+      photos,
+      reviews,
+      hours,
+      description: venueDetails.description || basicCafe.description || `Coffee shop in ${basicCafe.neighborhood}`,
+      phone: venueDetails.tel || basicCafe.phone,
+      website: venueDetails.website || basicCafe.website
+    };
   }
 
   async createCafe(insertCafe: InsertCafe): Promise<Cafe> {

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { MapView } from "@/components/map-view";
 import { CafeList } from "@/components/cafe-list";
+import { CafeDetailModal } from "@/components/cafe-detail-modal";
 import { useCafes } from "@/hooks/use-cafes";
 import { Map, List, MapPin, AlertCircle, Loader2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -10,6 +11,7 @@ import { useGeolocation } from "@/hooks/use-geolocation";
 export default function Home() {
   const [currentView, setCurrentView] = useState<"map" | "list">("map");
   const [sortBy, setSortBy] = useState("vibe");
+  const [selectedCafeId, setSelectedCafeId] = useState<string | null>(null);
   
   const isMobile = useIsMobile();
   const { latitude, longitude, city, loading: locationLoading, error: locationError, requestLocation, permission } = useGeolocation();
@@ -26,6 +28,14 @@ export default function Home() {
 
   const toggleView = () => {
     setCurrentView(currentView === "map" ? "list" : "map");
+  };
+
+  const handleCafeClick = (cafeId: string) => {
+    setSelectedCafeId(cafeId);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedCafeId(null);
   };
 
 
@@ -119,6 +129,7 @@ export default function Home() {
             isLoading={isLoading}
             sortBy={sortBy}
             onSortChange={setSortBy}
+            onCafeClick={handleCafeClick}
             userLocation={latitude && longitude ? { latitude, longitude } : undefined}
           />
         </div>
@@ -136,6 +147,12 @@ export default function Home() {
           </Button>
         </div>
       )}
+
+      {/* Café Detail Modal */}
+      <CafeDetailModal 
+        cafeId={selectedCafeId}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 }

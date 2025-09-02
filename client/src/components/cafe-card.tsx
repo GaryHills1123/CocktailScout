@@ -4,13 +4,19 @@ import { Badge } from "@/components/ui/badge";
 
 interface CafeCardProps {
   cafe: Cafe;
+  onClick?: (cafeId: string) => void;
 }
 
-export function CafeCard({ cafe }: CafeCardProps) {
+export function CafeCard({ cafe, onClick }: CafeCardProps) {
+  const handleClick = () => {
+    onClick?.(cafe.id);
+  };
+
   return (
     <div 
       className="cafe-card p-4 border-b border-border hover:bg-muted/50 transition-colors cursor-pointer"
       data-testid={`card-cafe-${cafe.id}`}
+      onClick={handleClick}
     >
       <div className="flex space-x-4">
         {/* Café Image */}

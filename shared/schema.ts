@@ -28,6 +28,47 @@ export const insertCafeSchema = createInsertSchema(cafes).omit({
 export type InsertCafe = z.infer<typeof insertCafeSchema>;
 export type Cafe = typeof cafes.$inferSelect;
 
+// Extended café details for detail view
+export const cafeDetailsSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  address: z.string(),
+  neighborhood: z.string(),
+  latitude: z.number(),
+  longitude: z.number(),
+  rating: z.number(),
+  reviewCount: z.number(),
+  priceLevel: z.string(),
+  vibeScore: z.number(),
+  imageUrl: z.string().nullable(),
+  photos: z.array(z.object({
+    id: z.string(),
+    url: z.string(),
+    width: z.number(),
+    height: z.number()
+  })).default([]),
+  tags: z.array(z.string()),
+  phone: z.string().nullable(),
+  website: z.string().nullable(),
+  openingHours: z.record(z.string()).default({}),
+  description: z.string().nullable(),
+  reviews: z.array(z.object({
+    text: z.string(),
+    date: z.string()
+  })).default([]),
+  hours: z.object({
+    display: z.string().optional(),
+    openNow: z.boolean().optional(),
+    periods: z.array(z.object({
+      day: z.number(),
+      open: z.string(),
+      close: z.string()
+    })).optional()
+  }).nullable()
+});
+
+export type CafeDetails = z.infer<typeof cafeDetailsSchema>;
+
 // Keep existing user schema for compatibility
 export const users = pgTable("users", {
   id: varchar("id").primaryKey(),

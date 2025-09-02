@@ -33,7 +33,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get single cafe
+  // Get single cafe (basic info)
   app.get("/api/cafes/:id", async (req, res) => {
     try {
       const cafe = await storage.getCafe(req.params.id);
@@ -44,6 +44,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching cafe:", error);
       res.status(500).json({ error: "Failed to fetch cafe" });
+    }
+  });
+
+  // Get detailed cafe information
+  app.get("/api/cafes/:id/details", async (req, res) => {
+    try {
+      const cafeDetails = await storage.getCafeDetails(req.params.id);
+      if (!cafeDetails) {
+        return res.status(404).json({ error: "Cafe not found" });
+      }
+      res.json(cafeDetails);
+    } catch (error) {
+      console.error("Error fetching cafe details:", error);
+      res.status(500).json({ error: "Failed to fetch cafe details" });
     }
   });
 

@@ -267,6 +267,21 @@ export class FoursquareService {
     }
   }
 
+  // Get detailed information for a specific café
+  async getCafeDetails(placeId: string): Promise<any> {
+    const params = {
+      fields: 'fsq_place_id,name,location,latitude,longitude,rating,price,stats,photos,website,tel,hours,tips,description'
+    };
+
+    try {
+      const response = await this.makeRequest(`/places/${placeId}`, params);
+      return response;
+    } catch (error) {
+      console.error(`Error fetching details for café ${placeId}:`, error);
+      throw error;
+    }
+  }
+
   // Keep the old method for backward compatibility, defaulting to Hamilton
   async getCoffeeShopsForHamilton(): Promise<Cafe[]> {
     return this.getCoffeeShopsForLocation(43.2557, -79.8711);

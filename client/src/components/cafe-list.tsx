@@ -9,6 +9,7 @@ interface CafeListProps {
   isLoading: boolean;
   sortBy: string;
   onSortChange: (sort: string) => void;
+  onCafeClick?: (cafeId: string) => void;
   userLocation?: {
     latitude: number;
     longitude: number;
@@ -20,6 +21,7 @@ export function CafeList({
   isLoading, 
   sortBy, 
   onSortChange,
+  onCafeClick,
   userLocation 
 }: CafeListProps) {
 
@@ -101,7 +103,7 @@ export function CafeList({
           </div>
         ) : (
           sortedCafes.map(cafe => (
-            <CafeCard key={cafe.id} cafe={cafe} />
+            <CafeCard key={cafe.id} cafe={cafe} onClick={onCafeClick} />
           ))
         )}
       </div>
