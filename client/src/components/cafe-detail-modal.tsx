@@ -33,7 +33,7 @@ export function CafeDetailModal({ cafeId, onClose }: CafeDetailModalProps) {
 
   return (
     <Dialog open={!!cafeId} onOpenChange={() => onClose()}>
-      <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden">
+      <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden z-[9999]" style={{ zIndex: 9999 }}>
         {isLoading ? (
           <div className="p-8 text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
