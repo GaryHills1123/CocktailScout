@@ -66,18 +66,57 @@ export function MapView({ cafes, isLoading }: MapViewProps) {
       });
       markersRef.current = [];
 
-      // Add markers for each cafe
+      // Function to get marker color based on vibe score
+      const getMarkerColor = (vibeScore: number) => {
+        if (vibeScore >= 80) return '#FFD700'; // Gold - Elite (80+)
+        if (vibeScore >= 70) return '#32CD32'; // Green - Excellent (70-79)
+        if (vibeScore >= 60) return '#4169E1'; // Blue - Good (60-69)
+        return '#808080'; // Gray - Basic (below 60)
+      };
+
+      const getTierLabel = (vibeScore: number) => {
+        if (vibeScore >= 80) return 'Elite';
+        if (vibeScore >= 70) return 'Excellent';
+        if (vibeScore >= 60) return 'Good';
+        return 'Fair';
+      };
+
+      // Add color-coded markers for each cafe
       cafes.forEach(cafe => {
-        const marker = L.marker([cafe.latitude, cafe.longitude]);
+        const markerColor = getMarkerColor(cafe.vibeScore);
+        const tierLabel = getTierLabel(cafe.vibeScore);
+        
+        // Create custom colored marker
+        const customIcon = L.divIcon({
+          className: 'custom-div-icon',
+          html: `<div style="
+            background-color: ${markerColor};
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: ${cafe.vibeScore >= 60 ? 'white' : 'black'};
+          ">☕</div>`,
+          iconSize: [24, 24],
+          iconAnchor: [12, 12]
+        });
+        
+        const marker = L.marker([cafe.latitude, cafe.longitude], { icon: customIcon });
         
         marker.bindPopup(`
-          <div style="padding: 8px; min-width: 150px;">
-            <h3 style="margin: 0 0 4px 0; font-weight: bold; color: #333;">${cafe.name}</h3>
-            <div style="margin: 4px 0; font-size: 14px; color: #666;">
-              <strong>Vibe Score:</strong> ${cafe.vibeScore}/100
+          <div style="padding: 10px; min-width: 180px;">
+            <h3 style="margin: 0 0 6px 0; font-weight: bold; color: #333;">${cafe.name}</h3>
+            <div style="margin: 4px 0; font-size: 15px; font-weight: bold; color: ${markerColor};">
+              ${cafe.vibeScore}/100 • ${tierLabel}
             </div>
             <div style="margin: 4px 0; font-size: 13px; color: #666;">
-              ${cafe.neighborhood}
+              📍 ${cafe.neighborhood}
             </div>
             <div style="margin: 4px 0; font-size: 13px; color: #666;">
               ${cafe.priceLevel} • ⭐ ${cafe.rating} (${cafe.reviewCount} reviews)
@@ -113,9 +152,34 @@ export function MapView({ cafes, isLoading }: MapViewProps) {
         </div>
       )}
       {mapReady && !isLoading && cafes.length > 0 && (
-        <div className="absolute top-4 right-4 bg-background/90 text-foreground px-2 py-1 rounded text-sm shadow">
-          {cafes.length} cafés on map
-        </div>
+        <>
+          <div className="absolute top-4 right-4 bg-background/90 text-foreground px-2 py-1 rounded text-sm shadow">
+            {cafes.length} cafés on map
+          </div>
+          
+          {/* Map Legend */}
+          <div className="absolute bottom-4 left-4 bg-background/95 text-foreground p-3 rounded-lg shadow-lg border">
+            <h4 className="font-semibold text-sm mb-2">Vibe Score Legend</h4>
+            <div className="space-y-1 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#FFD700' }}></div>
+                <span>80-100: Elite</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#32CD32' }}></div>
+                <span>70-79: Excellent</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#4169E1' }}></div>
+                <span>60-69: Good</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#808080' }}></div>
+                <span>Below 60: Fair</span>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
