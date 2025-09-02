@@ -73,9 +73,9 @@ export default function Home() {
                     <div className="flex items-center space-x-1 text-xs opacity-75">
                       <MapPin className="w-3 h-3" />
                       <span>
-                        {city && cafes ? `${city} • Found ${cafes.length} cafés nearby` : 
-                         city ? `${city} • Finding cafés...` :
-                         cafes ? `Found ${cafes.length} cafés nearby` : 'Finding cafés near you...'}
+                        {city && cafes ? `${city} (${latitude.toFixed(4)}, ${longitude.toFixed(4)}) • ${cafes.length} cafés` : 
+                         city ? `${city} (${latitude.toFixed(4)}, ${longitude.toFixed(4)}) • Finding cafés...` :
+                         cafes ? `${latitude.toFixed(4)}, ${longitude.toFixed(4)} • ${cafes.length} cafés` : 'Finding cafés near you...'}
                       </span>
                     </div>
                   )}

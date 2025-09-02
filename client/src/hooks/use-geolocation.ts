@@ -30,7 +30,13 @@ export function useGeolocation(options: GeolocationOptions = {}) {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=en`
       );
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
       const data = await response.json();
+      console.log('Reverse geocoding response:', data); // Debug log
       
       // Extract city name from various possible fields
       const city = data.address?.city || 
@@ -38,8 +44,9 @@ export function useGeolocation(options: GeolocationOptions = {}) {
                   data.address?.village || 
                   data.address?.municipality ||
                   data.address?.county ||
-                  'Unknown Location';
+                  null;
       
+      console.log('Detected city:', city); // Debug log
       return city;
     } catch (error) {
       console.error('Reverse geocoding failed:', error);
@@ -94,10 +101,13 @@ export function useGeolocation(options: GeolocationOptions = {}) {
       // Get city name via reverse geocoding
       const cityName = await reverseGeocode(latitude, longitude);
       
+      // If reverse geocoding fails, create a descriptive location string
+      const displayCity = cityName || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+      
       setState({
         latitude,
         longitude,
-        city: cityName,
+        city: displayCity,
         error: null,
         loading: false,
         permission: 'granted'
