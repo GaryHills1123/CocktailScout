@@ -7,11 +7,8 @@ import { useMemo } from "react";
 interface CafeListProps {
   cafes: Cafe[];
   isLoading: boolean;
-  selectedFilter: string;
-  onFilterChange: (filter: string) => void;
   sortBy: string;
   onSortChange: (sort: string) => void;
-  filters: string[];
   userLocation?: {
     latitude: number;
     longitude: number;
@@ -21,11 +18,8 @@ interface CafeListProps {
 export function CafeList({ 
   cafes, 
   isLoading, 
-  selectedFilter, 
-  onFilterChange, 
   sortBy, 
   onSortChange,
-  filters,
   userLocation 
 }: CafeListProps) {
 
@@ -42,32 +36,9 @@ export function CafeList({
     return R * c; // Distance in kilometers
   };
   
-  const filteredAndSortedCafes = useMemo(() => {
-    let filtered = cafes;
-
-    // Apply filters
-    if (selectedFilter !== "All") {
-      filtered = cafes.filter(cafe => {
-        switch (selectedFilter) {
-          case "Study Spots":
-            return cafe.tags.some(tag => 
-              tag.toLowerCase().includes("study") || 
-              tag.toLowerCase().includes("quiet") || 
-              tag.toLowerCase().includes("wifi")
-            );
-          case "Outdoor Seating":
-            return cafe.tags.some(tag => 
-              tag.toLowerCase().includes("outdoor") || 
-              tag.toLowerCase().includes("patio")
-            );
-          default:
-            return true;
-        }
-      });
-    }
-
+  const sortedCafes = useMemo(() => {
     // Apply sorting
-    const sorted = [...filtered].sort((a, b) => {
+    const sorted = [...cafes].sort((a, b) => {
       switch (sortBy) {
         case "distance":
           if (!userLocation) return 0; // If no user location, don't sort
@@ -95,34 +66,15 @@ export function CafeList({
     });
 
     return sorted;
-  }, [cafes, selectedFilter, sortBy]);
+  }, [cafes, sortBy, userLocation]);
 
   return (
     <div className="h-full flex flex-col">
-      {/* Filters */}
+      {/* Sort Controls */}
       <div className="p-4 border-b border-border bg-card">
-        <div className="flex flex-wrap gap-2 mb-4">
-          {filters.map(filter => (
-            <Button
-              key={filter}
-              variant={selectedFilter === filter ? "default" : "secondary"}
-              size="sm"
-              onClick={() => onFilterChange(filter)}
-              className={`rounded-full text-sm font-medium ${
-                selectedFilter === filter 
-                  ? "bg-accent text-accent-foreground" 
-                  : "bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground"
-              }`}
-              data-testid={`filter-${filter.toLowerCase().replace(" ", "-")}`}
-            >
-              {filter}
-            </Button>
-          ))}
-        </div>
-        
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground" data-testid="text-cafe-count">
-            {filteredAndSortedCafes.length} cafés found
+            {sortedCafes.length} cafés found
           </span>
           <Select value={sortBy} onValueChange={onSortChange}>
             <SelectTrigger className="w-48 text-sm bg-background border-border" data-testid="select-sort">
@@ -143,12 +95,12 @@ export function CafeList({
           <div className="p-8 text-center">
             <div className="text-muted-foreground" data-testid="loading-cafes">Loading cafés...</div>
           </div>
-        ) : filteredAndSortedCafes.length === 0 ? (
+        ) : sortedCafes.length === 0 ? (
           <div className="p-8 text-center">
             <div className="text-muted-foreground" data-testid="text-no-cafes">No cafés found</div>
           </div>
         ) : (
-          filteredAndSortedCafes.map(cafe => (
+          sortedCafes.map(cafe => (
             <CafeCard key={cafe.id} cafe={cafe} />
           ))
         )}

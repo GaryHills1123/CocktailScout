@@ -9,7 +9,6 @@ import { useGeolocation } from "@/hooks/use-geolocation";
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<"map" | "list">("map");
-  const [selectedFilter, setSelectedFilter] = useState("All");
   const [sortBy, setSortBy] = useState("vibe");
   
   const isMobile = useIsMobile();
@@ -29,7 +28,6 @@ export default function Home() {
     setCurrentView(currentView === "map" ? "list" : "map");
   };
 
-  const filters = ["All"];
 
   if (error) {
     return (
@@ -119,11 +117,8 @@ export default function Home() {
           <CafeList 
             cafes={cafes || []} 
             isLoading={isLoading}
-            selectedFilter={selectedFilter}
-            onFilterChange={setSelectedFilter}
             sortBy={sortBy}
             onSortChange={setSortBy}
-            filters={filters}
             userLocation={latitude && longitude ? { latitude, longitude } : undefined}
           />
         </div>
