@@ -157,6 +157,7 @@ export default function Home() {
       <CafeDetailModal 
         cafeId={selectedCafeId}
         onClose={handleCloseModal}
+        userLocation={latitude && longitude ? { latitude, longitude } : undefined}
       />
     </div>
   );

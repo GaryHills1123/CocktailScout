@@ -22,9 +22,10 @@ import { type CafeDetails } from "@shared/schema";
 interface CafeDetailModalProps {
   cafeId: string | null;
   onClose: () => void;
+  userLocation?: { latitude: number; longitude: number };
 }
 
-export function CafeDetailModal({ cafeId, onClose }: CafeDetailModalProps) {
+export function CafeDetailModal({ cafeId, onClose, userLocation }: CafeDetailModalProps) {
   const { data: cafeDetails, isLoading, error } = useQuery<CafeDetails>({
     queryKey: ['/api/cafes', cafeId, 'details'],
     enabled: !!cafeId,
@@ -36,11 +37,19 @@ export function CafeDetailModal({ cafeId, onClose }: CafeDetailModalProps) {
     const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     
     if (isIOS || isMac) {
-      // Open in Apple Maps
-      window.open(`http://maps.apple.com/?daddr=${lat},${lng}&dirflg=d`, '_blank');
+      // Open in Apple Maps with origin and destination
+      if (userLocation) {
+        window.open(`http://maps.apple.com/?saddr=${userLocation.latitude},${userLocation.longitude}&daddr=${lat},${lng}&dirflg=d`, '_blank');
+      } else {
+        window.open(`http://maps.apple.com/?daddr=${lat},${lng}&dirflg=d`, '_blank');
+      }
     } else {
-      // Open in Google Maps
-      window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+      // Open in Google Maps with origin and destination
+      if (userLocation) {
+        window.open(`https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${lat},${lng}`, '_blank');
+      } else {
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+      }
     }
   };
 
