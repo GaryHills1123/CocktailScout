@@ -5,12 +5,17 @@ import "leaflet/dist/leaflet.css";
 interface MapViewProps {
   cafes: Cafe[];
   isLoading: boolean;
+  userLocation?: {
+    latitude: number;
+    longitude: number;
+  };
 }
 
-export function MapView({ cafes, isLoading }: MapViewProps) {
+export function MapView({ cafes, isLoading, userLocation }: MapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
+  const userMarkerRef = useRef<any>(null);
   const [mapReady, setMapReady] = useState(false);
 
   // Initialize map
@@ -30,7 +35,10 @@ export function MapView({ cafes, isLoading }: MapViewProps) {
         shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
       });
 
-      const map = L.map(mapRef.current).setView([43.2557, -79.8711], 13);
+      // Center map on user location if available, otherwise Hamilton
+      const initialLat = userLocation?.latitude ?? 43.2557;
+      const initialLng = userLocation?.longitude ?? -79.8711;
+      const map = L.map(mapRef.current).setView([initialLat, initialLng], 13);
       
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors',
@@ -140,6 +148,74 @@ export function MapView({ cafes, isLoading }: MapViewProps) {
 
     addMarkers();
   }, [mapReady, cafes, isLoading]);
+
+  // Add user location marker
+  useEffect(() => {
+    if (!mapReady || !mapInstanceRef.current || !userLocation) return;
+
+    async function addUserMarker() {
+      const L = await import("leaflet");
+      const map = mapInstanceRef.current;
+
+      // Remove existing user marker
+      if (userMarkerRef.current) {
+        map.removeLayer(userMarkerRef.current);
+      }
+
+      // Create a custom user location marker
+      const userIcon = L.divIcon({
+        className: 'user-location-marker',
+        html: `<div style="
+          background-color: #FF4444;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          border: 3px solid white;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+          position: relative;
+        ">
+          <div style="
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: rgba(255, 68, 68, 0.2);
+            animation: pulse 2s infinite;
+          "></div>
+        </div>
+        <style>
+          @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.3; }
+            100% { transform: scale(0.8); opacity: 1; }
+          }
+        </style>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
+      });
+
+      const userMarker = L.marker([userLocation!.latitude, userLocation!.longitude], { 
+        icon: userIcon,
+        zIndexOffset: 1000 // Keep user marker on top
+      });
+
+      userMarker.bindPopup(`
+        <div style="padding: 10px; min-width: 120px; text-align: center;">
+          <h3 style="margin: 0 0 6px 0; font-weight: bold; color: #333;">📍 You are here</h3>
+          <div style="font-size: 12px; color: #666;">
+            ${userLocation!.latitude.toFixed(4)}, ${userLocation!.longitude.toFixed(4)}
+          </div>
+        </div>
+      `);
+
+      userMarker.addTo(map);
+      userMarkerRef.current = userMarker;
+    }
+
+    addUserMarker();
+  }, [mapReady, userLocation]);
 
   return (
     <div className="map-container w-full bg-muted relative" data-testid="map-container">

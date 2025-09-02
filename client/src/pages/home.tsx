@@ -147,7 +147,11 @@ export default function Home() {
           className={`w-full ${currentView === "list" ? "hidden" : "block"} ${!isMobile ? "lg:w-1/2 xl:w-3/5 lg:block" : ""}`}
           data-testid="container-map"
         >
-          <MapView cafes={cafes || []} isLoading={isLoading} />
+          <MapView 
+            cafes={cafes || []} 
+            isLoading={isLoading} 
+            userLocation={latitude && longitude ? { latitude, longitude } : undefined}
+          />
         </div>
 
         {/* Café List */}
