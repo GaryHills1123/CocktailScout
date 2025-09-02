@@ -5,16 +5,19 @@ import { Badge } from "@/components/ui/badge";
 interface CafeCardProps {
   cafe: Cafe;
   onClick?: (cafeId: string) => void;
+  isTop3?: boolean;
 }
 
-export function CafeCard({ cafe, onClick }: CafeCardProps) {
+export function CafeCard({ cafe, onClick, isTop3 = false }: CafeCardProps) {
   const handleClick = () => {
     onClick?.(cafe.id);
   };
 
   return (
     <div 
-      className="cafe-card p-4 border-b border-border hover:bg-muted/50 transition-colors cursor-pointer"
+      className={`cafe-card p-4 border-b border-border hover:bg-muted/50 transition-colors cursor-pointer relative ${
+        isTop3 ? 'bg-yellow-50 dark:bg-yellow-950/20 border-l-4 border-l-yellow-400' : ''
+      }`}
       data-testid={`card-cafe-${cafe.id}`}
       onClick={handleClick}
     >
@@ -30,7 +33,8 @@ export function CafeCard({ cafe, onClick }: CafeCardProps) {
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="font-semibold text-foreground truncate" data-testid={`text-cafe-name-${cafe.id}`}>
+              <h3 className="font-semibold text-foreground truncate flex items-center gap-2" data-testid={`text-cafe-name-${cafe.id}`}>
+                {isTop3 && <span className="text-yellow-500">🏆</span>}
                 {cafe.name}
               </h3>
               <p className="text-sm text-muted-foreground" data-testid={`text-neighborhood-${cafe.id}`}>

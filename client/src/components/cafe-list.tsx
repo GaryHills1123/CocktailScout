@@ -39,6 +39,10 @@ export function CafeList({
   };
   
   const sortedCafes = useMemo(() => {
+    // Identify top 3 cafes by vibe score (regardless of current sort)
+    const vibeScoreSorted = [...cafes].sort((a, b) => b.vibeScore - a.vibeScore);
+    const top3CafeIds = new Set(vibeScoreSorted.slice(0, 3).map(cafe => cafe.id));
+
     // Apply sorting
     const sorted = [...cafes].sort((a, b) => {
       switch (sortBy) {
@@ -67,7 +71,11 @@ export function CafeList({
       }
     });
 
-    return sorted;
+    // Add isTop3 flag to each cafe
+    return sorted.map(cafe => ({
+      ...cafe,
+      isTop3: top3CafeIds.has(cafe.id)
+    }));
   }, [cafes, sortBy, userLocation]);
 
   return (
@@ -103,7 +111,7 @@ export function CafeList({
           </div>
         ) : (
           sortedCafes.map(cafe => (
-            <CafeCard key={cafe.id} cafe={cafe} onClick={onCafeClick} />
+            <CafeCard key={cafe.id} cafe={cafe} onClick={onCafeClick} isTop3={cafe.isTop3} />
           ))
         )}
       </div>

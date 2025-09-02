@@ -86,25 +86,32 @@ export function MapView({ cafes, isLoading, onCafeClick, userLocation }: MapView
       });
       markersRef.current = [];
 
-      // Function to get marker color based on vibe score
-      const getMarkerColor = (vibeScore: number) => {
-        if (vibeScore >= 80) return '#FFD700'; // Gold - Elite (80+)
-        if (vibeScore >= 70) return '#32CD32'; // Green - Excellent (70-79)
-        if (vibeScore >= 60) return '#4169E1'; // Blue - Good (60-69)
+      // Sort cafes by vibe score to identify top 3
+      const sortedCafes = [...cafes].sort((a, b) => b.vibeScore - a.vibeScore);
+      const top3CafeIds = new Set(sortedCafes.slice(0, 3).map(cafe => cafe.id));
+
+      // Function to get marker color - top 3 are always gold
+      const getMarkerColor = (cafe: Cafe, isTop3: boolean) => {
+        if (isTop3) return '#FFD700'; // Gold - Top 3
+        if (cafe.vibeScore >= 80) return '#FFD700'; // Gold - Elite (80+)
+        if (cafe.vibeScore >= 70) return '#32CD32'; // Green - Excellent (70-79)
+        if (cafe.vibeScore >= 60) return '#4169E1'; // Blue - Good (60-69)
         return '#808080'; // Gray - Basic (below 60)
       };
 
-      const getTierLabel = (vibeScore: number) => {
-        if (vibeScore >= 80) return 'Elite';
-        if (vibeScore >= 70) return 'Excellent';
-        if (vibeScore >= 60) return 'Good';
+      const getTierLabel = (cafe: Cafe, isTop3: boolean) => {
+        if (isTop3) return 'Top 3';
+        if (cafe.vibeScore >= 80) return 'Elite';
+        if (cafe.vibeScore >= 70) return 'Excellent';
+        if (cafe.vibeScore >= 60) return 'Good';
         return 'Fair';
       };
 
       // Add color-coded markers for each cafe
       cafes.forEach(cafe => {
-        const markerColor = getMarkerColor(cafe.vibeScore);
-        const tierLabel = getTierLabel(cafe.vibeScore);
+        const isTop3 = top3CafeIds.has(cafe.id);
+        const markerColor = getMarkerColor(cafe, isTop3);
+        const tierLabel = getTierLabel(cafe, isTop3);
         
         // Create custom colored marker
         const customIcon = L.divIcon({
@@ -270,7 +277,7 @@ export function MapView({ cafes, isLoading, onCafeClick, userLocation }: MapView
             <div className="space-y-1 text-xs">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#FFD700' }}></div>
-                <span>80-100: Elite</span>
+                <span>🏆 Top 3 & Elite (80+)</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#32CD32' }}></div>
