@@ -49,9 +49,6 @@ export function CafeList({
     if (selectedFilter !== "All") {
       filtered = cafes.filter(cafe => {
         switch (selectedFilter) {
-          case "Open Now":
-            // Simple mock for now - in real app would check current time against hours
-            return true;
           case "Study Spots":
             return cafe.tags.some(tag => 
               tag.toLowerCase().includes("study") || 

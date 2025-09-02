@@ -29,7 +29,7 @@ export default function Home() {
     setCurrentView(currentView === "map" ? "list" : "map");
   };
 
-  const filters = ["All", "Open Now"];
+  const filters = ["All"];
 
   if (error) {
     return (
