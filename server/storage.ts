@@ -21,8 +21,7 @@ export class MemStorage implements IStorage {
   private cafes: Map<string, Cafe>;
   private cafeDetailsCache: Map<string, CafeDetails>;
   private foursquareService: FoursquareService | null;
-  private isDataLoaded: boolean = false;
-  private lastDataFetch: number = 0;
+  private locationCaches: Map<string, { cafes: Cafe[], lastFetch: number }> = new Map();
   private cacheExpiry: number = 1000 * 60 * 60; // 1 hour cache
 
   constructor() {
@@ -234,38 +233,49 @@ export class MemStorage implements IStorage {
     // Use Hamilton as default if no coordinates provided
     const lat = latitude ?? 43.2557;
     const lng = longitude ?? -79.8711;
-    const locationKey = `${lat.toFixed(4)},${lng.toFixed(4)}`;
+    const locationKey = `${lat.toFixed(3)},${lng.toFixed(3)}`; // Less precision for better caching
     
-    // Check if we need to fetch fresh data (first time or cache expired)  
-    const shouldFetchData = this.foursquareService && 
-      (!this.isDataLoaded || (now - this.lastDataFetch > this.cacheExpiry));
+    // Check if we have valid cached data for this location
+    const cachedData = this.locationCaches.get(locationKey);
+    const isCacheValid = cachedData && (now - cachedData.lastFetch < this.cacheExpiry);
     
-    if (shouldFetchData) {
+    if (isCacheValid) {
+      console.log(`Using cached coffee shop data for location ${locationKey} (no API call)`);
+      return cachedData!.cafes.sort((a, b) => b.vibeScore - a.vibeScore);
+    }
+    
+    // Fetch fresh data for this location
+    if (this.foursquareService) {
       try {
         console.log(`Loading real coffee shop data from Foursquare for location: ${lat}, ${lng}`);
         const realCafes = await this.foursquareService.getCoffeeShopsForLocation(lat, lng);
         console.log(`Foursquare returned ${realCafes.length} cafes`);
         
         if (realCafes.length > 0) {
-          // Clear existing data and add real data
+          // Cache the data for this specific location
+          this.locationCaches.set(locationKey, {
+            cafes: realCafes,
+            lastFetch: now
+          });
+          
+          // Also update the main cafes map for compatibility
           this.cafes.clear();
           realCafes.forEach(cafe => {
             this.cafes.set(cafe.id, cafe);
           });
-          this.isDataLoaded = true;
-          this.lastDataFetch = now;
-          console.log(`Successfully loaded ${realCafes.length} real coffee shops from Foursquare`);
+          
+          console.log(`Successfully loaded ${realCafes.length} real coffee shops from Foursquare for ${locationKey}`);
+          return realCafes.sort((a, b) => b.vibeScore - a.vibeScore);
         } else {
-          console.log('No cafes returned from Foursquare, keeping sample data');
+          console.log('No cafes returned from Foursquare, using sample data');
         }
       } catch (error) {
         console.error('Failed to load real data, using sample data:', error);
         console.error('Error details:', error?.message || error);
       }
-    } else if (this.isDataLoaded) {
-      console.log('Using cached coffee shop data (no API call)');
     }
     
+    // Fallback to sample data (usually Hamilton)
     return Array.from(this.cafes.values()).sort((a, b) => b.vibeScore - a.vibeScore);
   }
 
