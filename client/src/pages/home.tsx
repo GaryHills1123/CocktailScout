@@ -67,7 +67,9 @@ export default function Home() {
                   {latitude && longitude && !locationLoading && (
                     <div className="flex items-center space-x-1 text-xs opacity-75">
                       <MapPin className="w-3 h-3" />
-                      <span>Location found</span>
+                      <span>
+                        {cafes ? `Found ${cafes.length} cafés nearby` : 'Finding cafés near you...'}
+                      </span>
                     </div>
                   )}
                   {locationError && !locationLoading && (
