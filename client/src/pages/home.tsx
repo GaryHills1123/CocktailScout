@@ -124,6 +124,7 @@ export default function Home() {
             sortBy={sortBy}
             onSortChange={setSortBy}
             filters={filters}
+            userLocation={latitude && longitude ? { latitude, longitude } : undefined}
           />
         </div>
       </div>

@@ -12,6 +12,10 @@ interface CafeListProps {
   sortBy: string;
   onSortChange: (sort: string) => void;
   filters: string[];
+  userLocation?: {
+    latitude: number;
+    longitude: number;
+  };
 }
 
 export function CafeList({ 
@@ -21,8 +25,22 @@ export function CafeList({
   onFilterChange, 
   sortBy, 
   onSortChange,
-  filters 
+  filters,
+  userLocation 
 }: CafeListProps) {
+
+  // Calculate distance between two coordinates using Haversine formula
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const R = 6371; // Earth's radius in kilometers
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c; // Distance in kilometers
+  };
   
   const filteredAndSortedCafes = useMemo(() => {
     let filtered = cafes;
@@ -55,8 +73,20 @@ export function CafeList({
     const sorted = [...filtered].sort((a, b) => {
       switch (sortBy) {
         case "distance":
-          // Mock distance sorting - in real app would calculate from user location
-          return 0;
+          if (!userLocation) return 0; // If no user location, don't sort
+          const distanceA = calculateDistance(
+            userLocation.latitude, 
+            userLocation.longitude, 
+            a.latitude, 
+            a.longitude
+          );
+          const distanceB = calculateDistance(
+            userLocation.latitude, 
+            userLocation.longitude, 
+            b.latitude, 
+            b.longitude
+          );
+          return distanceA - distanceB; // Closest first
         case "price":
           const priceOrder = { "$": 1, "$$": 2, "$$$": 3, "$$$$": 4 };
           return (priceOrder[a.priceLevel as keyof typeof priceOrder] || 0) - 
