@@ -209,14 +209,18 @@ export class FoursquareService {
     if (tipTexts.includes('quiet')) tags.push('Quiet');
     if (tipTexts.includes('busy') || tipTexts.includes('popular')) tags.push('Bustling');
 
-    // Determine neighborhood from address
-    let neighborhood = 'Hamilton';
-    const addressLower = address.toLowerCase();
-    if (addressLower.includes('james') || addressLower.includes('downtown')) neighborhood = 'Downtown';
-    else if (addressLower.includes('westdale')) neighborhood = 'Westdale';
-    else if (addressLower.includes('barton')) neighborhood = 'Barton';
-    else if (addressLower.includes('stinson')) neighborhood = 'Stinson';
-    else if (addressLower.includes('locke')) neighborhood = 'Locke Street';
+    // Determine neighborhood from Foursquare location data
+    let neighborhood = venue.location.locality || venue.location.region || 'Unknown';
+    
+    // For Hamilton specifically, use more specific neighborhoods
+    if (neighborhood.toLowerCase() === 'hamilton') {
+      const addressLower = address.toLowerCase();
+      if (addressLower.includes('james') || addressLower.includes('downtown')) neighborhood = 'Downtown Hamilton';
+      else if (addressLower.includes('westdale')) neighborhood = 'Westdale';
+      else if (addressLower.includes('barton')) neighborhood = 'Barton';
+      else if (addressLower.includes('stinson')) neighborhood = 'Stinson';
+      else if (addressLower.includes('locke')) neighborhood = 'Locke Street';
+    }
 
     const rating = venue.rating || 0;
     const reviewCount = venue.stats?.total_ratings || 0;
