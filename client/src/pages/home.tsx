@@ -64,7 +64,7 @@ export default function Home() {
                 className="w-10 h-10 object-contain"
               />
               <div>
-                <h1 className="text-xl font-serif font-semibold text-black" data-testid="title-app">CaféScout</h1>
+                <h1 className="text-xl font-sans font-bold text-black tracking-tight" data-testid="title-app">CaféScout</h1>
                 <div className="flex items-center space-x-2">
                   <p className="text-sm text-gray-600">best coffee vibes near you</p>
                   {/* Location Status */}
