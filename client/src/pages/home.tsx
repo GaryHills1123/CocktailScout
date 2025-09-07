@@ -4,9 +4,10 @@ import { MapView } from "@/components/map-view";
 import { CafeList } from "@/components/cafe-list";
 import { CafeDetailModal } from "@/components/cafe-detail-modal";
 import { useCafes } from "@/hooks/use-cafes";
-import { Map, List, MapPin, AlertCircle, Loader2 } from "lucide-react";
+import { Map, List, MapPin, AlertCircle, Loader2, Info } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useGeolocation } from "@/hooks/use-geolocation";
+import { Link } from "wouter";
 import cocktailScoutLogo from "@assets/cocktaiscout-logo_1757258392750.png";
 
 export default function Home() {
@@ -93,6 +94,17 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center space-x-2">
+              <Link href="/about">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="bg-gray-100 hover:bg-gray-200 text-black"
+                  data-testid="button-about"
+                >
+                  <Info className="w-4 h-4 mr-2" />
+                  About
+                </Button>
+              </Link>
               <Button
                 variant="ghost"
                 size="sm"
