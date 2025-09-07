@@ -161,7 +161,15 @@ export class FoursquareService {
     };
 
     const response: FoursquareResponse = await this.makeRequest('/places/search', params);
-    return response.results || [];
+    
+    // Filter out venues that are clearly not bars
+    const excludeKeywords = ['market', 'grocery', 'food court', 'mall', 'hospital', 'school', 'bank', 'hotel lobby'];
+    const filteredResults = (response.results || []).filter(venue => {
+      const nameLower = venue.name.toLowerCase();
+      return !excludeKeywords.some(keyword => nameLower.includes(keyword));
+    });
+    
+    return filteredResults;
   }
 
   async searchByQuery(
