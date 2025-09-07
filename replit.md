@@ -1,10 +1,10 @@
-# CafeScout - Hamilton Coffee Map
+# Cocktail Scout - Hamilton Bar Discovery
 
 ## Overview
 
-CafeScout is a coffee shop discovery application focused on Hamilton, Ontario. It combines an interactive map view with a searchable list to help users find the best coffee spots based on a calculated "vibe score". The application ranks cafés using a proprietary algorithm that considers ratings, review counts, price fairness, and coffee-specific keywords to create a 0-100 vibe score.
+Cocktail Scout is a bar discovery application focused on Hamilton, Ontario. It combines an interactive map view with a searchable list to help users find the best bars and cocktail lounges based on a calculated "vibe score". The application ranks bars using a proprietary algorithm that considers ratings, review counts, price fairness, social activity (photo counts), and bar-specific keywords to create a 0-100 vibe score.
 
-The application is built as a full-stack TypeScript project with a React frontend and Express backend, featuring a clean, coffee-themed UI design with warm color palettes and friendly typography.
+The application is built as a full-stack TypeScript project with a React frontend and Express backend, featuring a clean, bar-themed UI design with modern aesthetics and cocktail-focused branding.
 
 ## User Preferences
 
