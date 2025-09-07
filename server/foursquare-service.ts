@@ -253,6 +253,10 @@ export class FoursquareService {
     if (tipTexts.includes('quiet')) tags.push('Quiet');
     if (tipTexts.includes('busy') || tipTexts.includes('popular')) tags.push('Bustling');
 
+    // Extract social data for vibe calculation
+    const photoCount = venue.photos?.length || 0;
+    const reviewText = tipTexts; // Full review text for social keyword analysis
+
     // Determine neighborhood from Foursquare location data
     let neighborhood = venue.location.locality || venue.location.region || 'Unknown';
     
@@ -271,8 +275,8 @@ export class FoursquareService {
     const priceLevel = venue.price === 1 ? '$' : venue.price === 3 ? '$$$' : venue.price === 4 ? '$$$$' : '$$';
     const finalTags = tags.length > 0 ? tags : ['Coffee'];
     
-    // Calculate vibe score
-    const vibeScore = calculateVibeScore(rating, reviewCount, priceLevel, finalTags, venue.name);
+    // Calculate vibe score with social factors heavily weighted
+    const vibeScore = calculateVibeScore(rating, reviewCount, priceLevel, finalTags, venue.name, photoCount, reviewText);
 
     return {
       id: venue.fsq_place_id,
