@@ -165,7 +165,8 @@ export class FoursquareService {
     // Filter out venues that are clearly not bars
     const excludeKeywords = [
       'market', 'grocery', 'food court', 'mall', 'hospital', 'school', 'bank', 'hotel lobby',
-      'coffee', 'espresso', 'cafe', 'café', 'roaster', 'bean', 'latte', 'cappuccino', 'restaurant', 'eatery'
+      'coffee', 'espresso', 'cafe', 'café', 'roaster', 'bean', 'latte', 'cappuccino', 'restaurant', 'eatery',
+      'starbucks', 'tim hortons', 'second cup', 'dunkin', 'collection coffee'
     ];
     const filteredResults = (response.results || []).filter(venue => {
       const nameLower = venue.name.toLowerCase();
