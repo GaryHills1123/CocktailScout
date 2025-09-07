@@ -153,15 +153,38 @@ export class FoursquareService {
     limit: number = 50
   ): Promise<FoursquareVenue[]> {
     const params = {
-      categories: '13003', // Only cocktail bar - let's test with the most specific category
+      query: 'bar', // Search by query instead of categories
       ll: `${latitude},${longitude}`,
       radius: radius.toString(),
       limit: limit.toString(),
-      fields: 'fsq_place_id,name,location,latitude,longitude,rating,price,stats,photos'
+      fields: 'fsq_place_id,name,location,latitude,longitude,rating,price,stats,photos,categories'
     };
 
     const response: FoursquareResponse = await this.makeRequest('/places/search', params);
-    return response.results || [];
+    
+    // Filter results to only include actual bars
+    const barResults = (response.results || []).filter(venue => {
+      const name = venue.name.toLowerCase();
+      const categories = venue.categories || [];
+      
+      // Must contain bar-related words OR have bar-related categories
+      const hasBarName = name.includes('bar') || name.includes('pub') || name.includes('tavern') || 
+                         name.includes('brewery') || name.includes('lounge');
+      
+      const hasBarCategory = categories.some((cat: any) => {
+        const catName = cat.name?.toLowerCase() || '';
+        return catName.includes('bar') || catName.includes('pub') || catName.includes('brewery') ||
+               catName.includes('lounge') || catName.includes('cocktail') || catName.includes('tavern');
+      });
+      
+      // Exclude obvious non-bars
+      const isNotBar = name.includes('coffee') || name.includes('cafe') || name.includes('restaurant') ||
+                       name.includes('food') || name.includes('market') || name.includes('burrito');
+      
+      return (hasBarName || hasBarCategory) && !isNotBar;
+    });
+    
+    return barResults;
   }
 
   async searchByQuery(
