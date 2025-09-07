@@ -163,7 +163,10 @@ export class FoursquareService {
     const response: FoursquareResponse = await this.makeRequest('/places/search', params);
     
     // Filter out venues that are clearly not bars
-    const excludeKeywords = ['market', 'grocery', 'food court', 'mall', 'hospital', 'school', 'bank', 'hotel lobby'];
+    const excludeKeywords = [
+      'market', 'grocery', 'food court', 'mall', 'hospital', 'school', 'bank', 'hotel lobby',
+      'coffee', 'espresso', 'cafe', 'café', 'roaster', 'bean', 'latte', 'cappuccino', 'restaurant', 'eatery'
+    ];
     const filteredResults = (response.results || []).filter(venue => {
       const nameLower = venue.name.toLowerCase();
       return !excludeKeywords.some(keyword => nameLower.includes(keyword));
