@@ -66,7 +66,7 @@ export default function Home() {
               <div>
                 <h1 className="text-xl font-sans font-bold text-black tracking-tight" data-testid="title-app">Cocktail Scout</h1>
                 <div className="flex items-center space-x-2">
-                  <p className="text-sm text-gray-600">best bar vibes near you</p>
+                  <p className="text-sm text-gray-600">Gary rates best bar vibes near you</p>
                   {/* Location Status */}
                   {locationLoading && (
                     <div className="flex items-center space-x-1 text-xs opacity-75">
