@@ -152,9 +152,8 @@ export class FoursquareService {
     radius: number = 10000, // 10km radius
     limit: number = 50
   ): Promise<FoursquareVenue[]> {
-    // Use proper v3 category IDs for bars - these are the v3 equivalents
     const params = {
-      categories: '13003,13020,13021,13025,13029,13032,13033', // Cocktail Bar, Sports Bar, Wine Bar, Beer Bar, Dive Bar, Gay Bar, Hookah Bar
+      categories: '13003', // ONLY Cocktail Bar - no filters, trust Foursquare
       ll: `${latitude},${longitude}`,
       radius: radius.toString(),
       limit: limit.toString(),
@@ -162,21 +161,7 @@ export class FoursquareService {
     };
 
     const response: FoursquareResponse = await this.makeRequest('/places/search', params);
-    
-    // Minimal filtering since categories should be accurate
-    const barResults = (response.results || []).filter(venue => {
-      const name = venue.name.toLowerCase();
-      
-      // Only exclude obvious non-bars that might have slipped through bad categorization
-      const isNotBar = name.includes('coffee') || name.includes('cafe') || 
-                       name.includes('dessert') || name.includes('ice cream') ||
-                       name.includes('bakery') || name.includes('restaurant') ||
-                       (name.includes('bean') && name.includes('bar')); // Specific Bean Bar exclusion
-      
-      return !isNotBar;
-    });
-    
-    return barResults;
+    return response.results || [];
   }
 
   async searchByQuery(
