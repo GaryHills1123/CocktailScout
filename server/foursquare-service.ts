@@ -152,19 +152,34 @@ export class FoursquareService {
     radius: number = 10000, // 10km radius
     limit: number = 50
   ): Promise<FoursquareVenue[]> {
-    // Foursquare categories are broken, go back to smart text search
-    const params = {
-      query: 'cocktail bar', 
-      ll: `${latitude},${longitude}`,
-      radius: radius.toString(),
-      limit: limit.toString(),
-      fields: 'fsq_place_id,name,location,latitude,longitude,rating,price,stats,photos,categories'
-    };
-
-    const response: FoursquareResponse = await this.makeRequest('/places/search', params);
+    // Search multiple terms to catch all bars including Easy Tiger
+    const searchTerms = ['cocktail', 'bar', 'pub', 'brewery'];
+    const allResults = new Map<string, any>();
     
-    // VERY strict filtering - only legitimate bars
-    const actualBars = (response.results || []).filter(venue => {
+    for (const term of searchTerms) {
+      try {
+        const params = {
+          query: term,
+          ll: `${latitude},${longitude}`,
+          radius: radius.toString(),
+          limit: '20',
+          fields: 'fsq_place_id,name,location,latitude,longitude,rating,price,stats,photos,categories'
+        };
+
+        const response: FoursquareResponse = await this.makeRequest('/places/search', params);
+        
+        (response.results || []).forEach(venue => {
+          if (!allResults.has(venue.fsq_place_id)) {
+            allResults.set(venue.fsq_place_id, venue);
+          }
+        });
+      } catch (error) {
+        console.log(`Search failed for term: ${term}`, error);
+      }
+    }
+    
+    // Smart filtering - keep actual bars, block junk
+    const actualBars = Array.from(allResults.values()).filter(venue => {
       const name = venue.name.toLowerCase();
       const categories = venue.categories || [];
       
@@ -174,20 +189,21 @@ export class FoursquareService {
                           categories.some((cat: any) => {
                             const catName = cat.name?.toLowerCase() || '';
                             return catName.includes('bar') || catName.includes('pub') || 
-                                   catName.includes('brewery') || catName.includes('tavern');
+                                   catName.includes('brewery') || catName.includes('tavern') ||
+                                   catName.includes('cocktail');
                           });
       
-      // Block all the junk we saw
+      // Block all the junk we saw before
       const isJunk = name.includes('burrito') || name.includes('shawarma') || name.includes('market') ||
                      name.includes('starbucks') || name.includes('coffee') || name.includes('cafe') ||
                      name.includes('gallery') || name.includes('park') || name.includes('food') ||
                      name.includes('bakery') || name.includes('smoothie') || name.includes('chocolate') ||
-                     name.includes('restaurant') && !name.includes('bar');
+                     (name.includes('restaurant') && !name.includes('bar'));
       
       return isActualBar && !isJunk;
     });
     
-    return actualBars;
+    return actualBars.slice(0, limit);
   }
 
   async searchByQuery(
