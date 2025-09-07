@@ -84,7 +84,7 @@ export function CafeList({
       <div className="p-4 border-b border-border bg-card">
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground" data-testid="text-cafe-count">
-            {sortedCafes.length} cafés found
+            {sortedCafes.length} bars found
           </span>
           <Select value={sortBy} onValueChange={onSortChange}>
             <SelectTrigger className="w-48 text-sm bg-background border-border" data-testid="select-sort">
@@ -103,11 +103,11 @@ export function CafeList({
       <div className="flex-1 overflow-y-auto" style={{ maxHeight: "calc(100vh - 200px)" }}>
         {isLoading ? (
           <div className="p-8 text-center">
-            <div className="text-muted-foreground" data-testid="loading-cafes">Loading cafés...</div>
+            <div className="text-muted-foreground" data-testid="loading-cafes">Loading bars...</div>
           </div>
         ) : sortedCafes.length === 0 ? (
           <div className="p-8 text-center">
-            <div className="text-muted-foreground" data-testid="text-no-cafes">No cafés found</div>
+            <div className="text-muted-foreground" data-testid="text-no-cafes">No bars found</div>
           </div>
         ) : (
           sortedCafes.map(cafe => (

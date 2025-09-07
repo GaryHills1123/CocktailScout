@@ -27,25 +27,25 @@ export function calculateVibeScore(
   };
   const priceScore = priceScores[priceLevel] || 0;
   
-  // Coffee keyword bonus (0-25 points) - increased for specialty focus
-  const coffeeKeywords = [
-    "Single Origin", "Pour Over", "Artisan Roasted", "Specialty Drinks",
-    "Local Roaster", "Espresso Bar", "French Press", "Cold Brew",
-    "Organic", "Fair Trade", "Third Wave", "Latte Art", "Specialty Coffee"
+  // Bar keyword bonus (0-25 points) - increased for specialty focus
+  const barKeywords = [
+    "Craft Cocktails", "Whiskey", "Beer Garden", "Live Music",
+    "Sports Bar", "Craft Beer", "Wine Bar", "Cocktail Lounge",
+    "Pub", "Brewery", "Happy Hour", "Local Brews", "Mixology"
   ];
   
   const keywordMatches = tags.filter(tag => 
-    coffeeKeywords.some(keyword => tag.includes(keyword))
+    barKeywords.some(keyword => tag.includes(keyword))
   ).length;
   let keywordScore = Math.min(keywordMatches * 5, 25);
   
-  // Specialty establishment bonus (0-10 points) - boost for espresso bars and artisan cafes
+  // Specialty establishment bonus (0-10 points) - boost for cocktail bars and craft pubs
   let specialtyBonus = 0;
   if (name) {
     const nameLower = name.toLowerCase();
-    if (nameLower.includes('espresso bar') || nameLower.includes('coffee co')) {
+    if (nameLower.includes('cocktail') || nameLower.includes('craft')) {
       specialtyBonus += 8; // Strong specialty indicator
-    } else if (nameLower.includes('espresso') || nameLower.includes('roaster') || nameLower.includes('coffee house')) {
+    } else if (nameLower.includes('pub') || nameLower.includes('brewery') || nameLower.includes('tavern')) {
       specialtyBonus += 5; // Moderate specialty indicator
     }
   }

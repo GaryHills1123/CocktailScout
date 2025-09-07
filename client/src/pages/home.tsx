@@ -44,7 +44,7 @@ export default function Home() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-foreground mb-2">Error Loading Cafes</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-2">Error Loading Bars</h2>
           <p className="text-muted-foreground">Please try again later</p>
         </div>
       </div>
@@ -64,9 +64,9 @@ export default function Home() {
                 className="w-10 h-10 object-contain"
               />
               <div>
-                <h1 className="text-xl font-sans font-bold text-black tracking-tight" data-testid="title-app">CaféScout</h1>
+                <h1 className="text-xl font-sans font-bold text-black tracking-tight" data-testid="title-app">BarScout</h1>
                 <div className="flex items-center space-x-2">
-                  <p className="text-sm text-gray-600">best coffee vibes near you</p>
+                  <p className="text-sm text-gray-600">best bar vibes near you</p>
                   {/* Location Status */}
                   {locationLoading && (
                     <div className="flex items-center space-x-1 text-xs opacity-75">
@@ -78,8 +78,8 @@ export default function Home() {
                     <div className="flex items-center space-x-1 text-xs opacity-75">
                       <MapPin className="w-3 h-3" />
                       <span>
-                        {city ? `${city}${cafes ? ` • ${cafes.length} cafés` : ''}` :
-                         cafes ? `${latitude.toFixed(4)}, ${longitude.toFixed(4)} • ${cafes.length} cafés` : 'Finding cafés near you...'}
+                        {city ? `${city}${cafes ? ` • ${cafes.length} bars` : ''}` :
+                         cafes ? `${latitude.toFixed(4)}, ${longitude.toFixed(4)} • ${cafes.length} bars` : 'Finding bars near you...'}
                       </span>
                     </div>
                   )}

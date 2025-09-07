@@ -153,7 +153,7 @@ export class FoursquareService {
     limit: number = 50
   ): Promise<FoursquareVenue[]> {
     const params = {
-      query: 'coffee',
+      query: 'bar',
       ll: `${latitude},${longitude}`,
       radius: radius.toString(),
       limit: limit.toString(),
@@ -196,7 +196,10 @@ export class FoursquareService {
     
     // Add category-based tags
     venue.categories?.forEach(cat => {
-      if (cat.name.toLowerCase().includes('coffee')) tags.push('Coffee');
+      if (cat.name.toLowerCase().includes('bar')) tags.push('Bar');
+      if (cat.name.toLowerCase().includes('pub')) tags.push('Pub');
+      if (cat.name.toLowerCase().includes('cocktail')) tags.push('Cocktail');
+      if (cat.name.toLowerCase().includes('brewery')) tags.push('Brewery');
       if (cat.name.toLowerCase().includes('cafe')) tags.push('Café');
       if (cat.name.toLowerCase().includes('espresso')) tags.push('Espresso');
     });
@@ -254,7 +257,7 @@ export class FoursquareService {
 
   async getCoffeeShopsForLocation(latitude: number, longitude: number): Promise<Cafe[]> {
     try {
-      console.log(`Fetching coffee shops from Foursquare for location: ${latitude}, ${longitude}`);
+      console.log(`Fetching bars from Foursquare for location: ${latitude}, ${longitude}`);
       
       const venues = await this.searchCoffeeShops(latitude, longitude);
       console.log(`Found ${venues.length} venues from Foursquare`);

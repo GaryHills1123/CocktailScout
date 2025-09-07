@@ -264,7 +264,7 @@ export class MemStorage implements IStorage {
             this.cafes.set(cafe.id, cafe);
           });
           
-          console.log(`Successfully loaded ${realCafes.length} real coffee shops from Foursquare for ${locationKey}`);
+          console.log(`Successfully loaded ${realCafes.length} real bars from Foursquare for ${locationKey}`);
           return realCafes.sort((a, b) => b.vibeScore - a.vibeScore);
         } else {
           console.log('No cafes returned from Foursquare, using sample data');
