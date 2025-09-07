@@ -139,7 +139,7 @@ export default function About() {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="font-medium text-sm">Review Count</h4>
-                      <Badge variant="outline" size="sm">8 pts</Badge>
+                      <Badge variant="outline">8 pts</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">More reviews = more popular</p>
                   </div>
@@ -150,7 +150,7 @@ export default function About() {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="font-medium text-sm">Price Fairness</h4>
-                      <Badge variant="outline" size="sm">10 pts</Badge>
+                      <Badge variant="outline">10 pts</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">$$ pricing is optimal</p>
                   </div>
@@ -161,7 +161,7 @@ export default function About() {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="font-medium text-sm">Bar Keywords</h4>
-                      <Badge variant="outline" size="sm">15 pts</Badge>
+                      <Badge variant="outline">15 pts</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">Craft cocktails, live music, etc.</p>
                   </div>
@@ -172,7 +172,7 @@ export default function About() {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="font-medium text-sm">Specialty Bonus</h4>
-                      <Badge variant="outline" size="sm">8 pts</Badge>
+                      <Badge variant="outline">8 pts</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">Cocktail bars & breweries</p>
                   </div>
