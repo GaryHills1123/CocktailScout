@@ -153,7 +153,7 @@ export class FoursquareService {
     limit: number = 50
   ): Promise<FoursquareVenue[]> {
     // Search multiple terms to catch all bars including Easy Tiger
-    const searchTerms = ['cocktail', 'bar', 'pub', 'brewery'];
+    const searchTerms = ['cocktail', 'bar', 'pub', 'brewery', 'Easy Tiger', 'Farside'];
     const allResults = new Map<string, any>();
     
     for (const term of searchTerms) {
