@@ -153,7 +153,7 @@ export class FoursquareService {
     limit: number = 50
   ): Promise<FoursquareVenue[]> {
     const params = {
-      categories: '13003,13020,13021,13025', // Just bars: cocktail bar, sports bar, wine bar, beer bar
+      categories: '13003', // Only cocktail bar - let's test with the most specific category
       ll: `${latitude},${longitude}`,
       radius: radius.toString(),
       limit: limit.toString(),
@@ -161,19 +161,7 @@ export class FoursquareService {
     };
 
     const response: FoursquareResponse = await this.makeRequest('/places/search', params);
-    
-    // Filter out venues that are clearly not bars
-    const excludeKeywords = [
-      'market', 'grocery', 'food court', 'mall', 'hospital', 'school', 'bank', 'hotel lobby',
-      'coffee', 'espresso', 'cafe', 'café', 'roaster', 'bean', 'latte', 'cappuccino', 'restaurant', 'eatery',
-      'starbucks', 'tim hortons', 'second cup', 'dunkin', 'collection coffee'
-    ];
-    const filteredResults = (response.results || []).filter(venue => {
-      const nameLower = venue.name.toLowerCase();
-      return !excludeKeywords.some(keyword => nameLower.includes(keyword));
-    });
-    
-    return filteredResults;
+    return response.results || [];
   }
 
   async searchByQuery(
