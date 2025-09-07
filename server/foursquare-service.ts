@@ -152,8 +152,9 @@ export class FoursquareService {
     radius: number = 10000, // 10km radius
     limit: number = 50
   ): Promise<FoursquareVenue[]> {
+    // Foursquare categories are broken, go back to smart text search
     const params = {
-      categories: '13003', // ONLY Cocktail Bar - no filters, trust Foursquare
+      query: 'cocktail bar', 
       ll: `${latitude},${longitude}`,
       radius: radius.toString(),
       limit: limit.toString(),
@@ -161,7 +162,32 @@ export class FoursquareService {
     };
 
     const response: FoursquareResponse = await this.makeRequest('/places/search', params);
-    return response.results || [];
+    
+    // VERY strict filtering - only legitimate bars
+    const actualBars = (response.results || []).filter(venue => {
+      const name = venue.name.toLowerCase();
+      const categories = venue.categories || [];
+      
+      // Must be clearly a bar establishment
+      const isActualBar = name.includes('bar') || name.includes('pub') || name.includes('tavern') ||
+                          name.includes('brewery') || name.includes('lounge') || 
+                          categories.some((cat: any) => {
+                            const catName = cat.name?.toLowerCase() || '';
+                            return catName.includes('bar') || catName.includes('pub') || 
+                                   catName.includes('brewery') || catName.includes('tavern');
+                          });
+      
+      // Block all the junk we saw
+      const isJunk = name.includes('burrito') || name.includes('shawarma') || name.includes('market') ||
+                     name.includes('starbucks') || name.includes('coffee') || name.includes('cafe') ||
+                     name.includes('gallery') || name.includes('park') || name.includes('food') ||
+                     name.includes('bakery') || name.includes('smoothie') || name.includes('chocolate') ||
+                     name.includes('restaurant') && !name.includes('bar');
+      
+      return isActualBar && !isJunk;
+    });
+    
+    return actualBars;
   }
 
   async searchByQuery(
