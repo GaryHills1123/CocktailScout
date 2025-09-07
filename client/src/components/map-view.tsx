@@ -129,7 +129,7 @@ export function MapView({ cafes, isLoading, onCafeClick, userLocation }: MapView
             font-size: 10px;
             font-weight: bold;
             color: ${cafe.vibeScore >= 60 ? 'white' : 'black'};
-          ">☕</div>`,
+          ">🍸</div>`,
           iconSize: [24, 24],
           iconAnchor: [12, 12]
         });
