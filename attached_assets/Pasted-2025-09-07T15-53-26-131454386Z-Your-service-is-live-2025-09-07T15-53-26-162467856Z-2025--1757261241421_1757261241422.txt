@@ -1,0 +1,50 @@
+2025-09-07T15:53:26.131454386Z ==> Your service is live 🎉
+2025-09-07T15:53:26.162467856Z ==> 
+2025-09-07T15:53:26.191118165Z ==> ///////////////////////////////////////////////////////////
+2025-09-07T15:53:26.222021335Z ==> 
+2025-09-07T15:53:26.249518115Z ==> Available at your primary URL https://cocktailscout.onrender.com
+2025-09-07T15:53:26.338566814Z ==> 
+2025-09-07T15:53:26.367432603Z ==> ///////////////////////////////////////////////////////////
+2025-09-07T15:54:47.229801922Z Making Foursquare v3 API request to: https://places-api.foursquare.com/places/search?query=bar&ll=43.2557%2C-79.8711&radius=10000&limit=20&fields=fsq_place_id%2Cname%2Clocation%2Clatitude%2Clongitude%2Crating%2Cprice%2Cstats%2Cphotos%2Ccategories
+2025-09-07T15:54:47.968234978Z Making Foursquare v3 API request to: https://places-api.foursquare.com/places/search?query=pub&ll=43.2557%2C-79.8711&radius=10000&limit=20&fields=fsq_place_id%2Cname%2Clocation%2Clatitude%2Clongitude%2Crating%2Cprice%2Cstats%2Cphotos%2Ccategories
+2025-09-07T15:54:48.162667153Z Making Foursquare v3 API request to: https://places-api.foursquare.com/places/search?query=brewery&ll=43.2557%2C-79.8711&radius=10000&limit=20&fields=fsq_place_id%2Cname%2Clocation%2Clatitude%2Clongitude%2Crating%2Cprice%2Cstats%2Cphotos%2Ccategories
+2025-09-07T15:54:48.548213304Z Making Foursquare v3 API request to: https://places-api.foursquare.com/places/search?query=Easy+Tiger&ll=43.2557%2C-79.8711&radius=10000&limit=20&fields=fsq_place_id%2Cname%2Clocation%2Clatitude%2Clongitude%2Crating%2Cprice%2Cstats%2Cphotos%2Ccategories
+2025-09-07T15:54:48.724634086Z Making Foursquare v3 API request to: https://places-api.foursquare.com/places/search?query=Farside&ll=43.2557%2C-79.8711&radius=10000&limit=20&fields=fsq_place_id%2Cname%2Clocation%2Clatitude%2Clongitude%2Crating%2Cprice%2Cstats%2Cphotos%2Ccategories
+2025-09-07T15:54:48.848372381Z Found 48 venues from Foursquare
+2025-09-07T15:54:48.849610401Z Converted 48 venues to cafe format
+2025-09-07T15:54:48.849639242Z Foursquare returned 48 cafes
+2025-09-07T15:54:48.849774475Z Successfully loaded 48 real bars from Foursquare for 43.256,-79.871
+2025-09-07T15:54:48.852772877Z 3:54:48 PM [express] GET /api/cafes 200 in 2115ms :: [{"id":"56339dbe498ec143050a20ab","name":"Colle…
+2025-09-07T15:54:52.240260521Z Loading real coffee shop data from Foursquare for location: 43.255942351537584, -79.8674953721267
+2025-09-07T15:54:52.240377334Z Fetching bars from Foursquare for location: 43.255942351537584, -79.8674953721267
+2025-09-07T15:54:52.240603729Z Making Foursquare v3 API request to: https://places-api.foursquare.com/places/search?query=cocktail&ll=43.255942351537584%2C-79.8674953721267&radius=10000&limit=20&fields=fsq_place_id%2Cname%2Clocation%2Clatitude%2Clongitude%2Crating%2Cprice%2Cstats%2Cphotos%2Ccategories
+2025-09-07T15:54:52.479278778Z Making Foursquare v3 API request to: https://places-api.foursquare.com/places/search?query=bar&ll=43.255942351537584%2C-79.8674953721267&radius=10000&limit=20&fields=fsq_place_id%2Cname%2Clocation%2Clatitude%2Clongitude%2Crating%2Cprice%2Cstats%2Cphotos%2Ccategories
+2025-09-07T15:54:53.181142175Z Making Foursquare v3 API request to: https://places-api.foursquare.com/places/search?query=pub&ll=43.255942351537584%2C-79.8674953721267&radius=10000&limit=20&fields=fsq_place_id%2Cname%2Clocation%2Clatitude%2Clongitude%2Crating%2Cprice%2Cstats%2Cphotos%2Ccategories
+2025-09-07T15:54:53.367396524Z Making Foursquare v3 API request to: https://places-api.foursquare.com/places/search?query=brewery&ll=43.255942351537584%2C-79.8674953721267&radius=10000&limit=20&fields=fsq_place_id%2Cname%2Clocation%2Clatitude%2Clongitude%2Crating%2Cprice%2Cstats%2Cphotos%2Ccategories
+2025-09-07T15:54:53.561925641Z Making Foursquare v3 API request to: https://places-api.foursquare.com/places/search?query=Easy+Tiger&ll=43.255942351537584%2C-79.8674953721267&radius=10000&limit=20&fields=fsq_place_id%2Cname%2Clocation%2Clatitude%2Clongitude%2Crating%2Cprice%2Cstats%2Cphotos%2Ccategories
+2025-09-07T15:54:53.73655269Z Making Foursquare v3 API request to: https://places-api.foursquare.com/places/search?query=Farside&ll=43.255942351537584%2C-79.8674953721267&radius=10000&limit=20&fields=fsq_place_id%2Cname%2Clocation%2Clatitude%2Clongitude%2Crating%2Cprice%2Cstats%2Cphotos%2Ccategories
+2025-09-07T15:54:53.866121706Z Found 49 venues from Foursquare
+2025-09-07T15:54:53.866351911Z Converted 49 venues to cafe format
+2025-09-07T15:54:53.866358722Z Foursquare returned 49 cafes
+2025-09-07T15:54:53.866370152Z Successfully loaded 49 real bars from Foursquare for 43.256,-79.867
+2025-09-07T15:54:53.867516379Z 3:54:53 PM [express] GET /api/cafes 200 in 1628ms :: [{"id":"56339dbe498ec143050a20ab","name":"Colle…
+2025-09-07T15:55:55.645569515Z Fetching detailed café info from Foursquare for: 4ba65802f964a5208d4839e3
+2025-09-07T15:55:55.646071347Z Making Foursquare v3 API request to: https://places-api.foursquare.com/places/4ba65802f964a5208d4839e3?fields=fsq_place_id%2Cname%2Clocation%2Clatitude%2Clongitude%2Crating%2Cprice%2Cstats%2Cphotos%2Cwebsite%2Ctel%2Chours%2Ctips%2Cdescription
+2025-09-07T15:55:56.061071058Z Cached detailed info for café: Pepperwood Bistro & Brewery
+2025-09-07T15:55:56.061990669Z 3:55:56 PM [express] GET /api/cafes/4ba65802f964a5208d4839e3/details 200 in 417ms :: {"id":"4ba65802…
+2025-09-07T15:56:48.761017983Z Fetching detailed café info from Foursquare for: 4b6b5d23f964a520a7032ce3
+2025-09-07T15:56:48.761061304Z Making Foursquare v3 API request to: https://places-api.foursquare.com/places/4b6b5d23f964a520a7032ce3?fields=fsq_place_id%2Cname%2Clocation%2Clatitude%2Clongitude%2Crating%2Cprice%2Cstats%2Cphotos%2Cwebsite%2Ctel%2Chours%2Ctips%2Cdescription
+2025-09-07T15:56:49.14344974Z Cached detailed info for café: The Phoenix Bar & Grill
+2025-09-07T15:56:49.144375773Z 3:56:49 PM [express] GET /api/cafes/4b6b5d23f964a520a7032ce3/details 200 in 384ms :: {"id":"4b6b5d23…
+2025-09-07T15:58:26.828847178Z ==> Detected service running on port 10000
+2025-09-07T15:58:26.978126996Z ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+2025-09-07T15:59:55.161701722Z Using cached coffee shop data for location 43.256,-79.871 (no API call)
+2025-09-07T15:59:55.162887961Z 3:59:55 PM [express] GET /api/cafes 304 in 1ms :: [{"id":"56339dbe498ec143050a20ab","name":"Collecti…
+2025-09-07T15:59:55.668543726Z Using cached coffee shop data for location 43.256,-79.867 (no API call)
+2025-09-07T15:59:55.669871518Z 3:59:55 PM [express] GET /api/cafes 200 in 1ms :: [{"id":"56339dbe498ec143050a20ab","name":"Collecti…
+2025-09-07T16:00:01.081027778Z Using cached café details (no API call)
+2025-09-07T16:00:01.082050842Z 4:00:01 PM [express] GET /api/cafes/4ba65802f964a5208d4839e3/details 304 in 1ms :: {"id":"4ba65802f9…
+2025-09-07T16:00:21.627654477Z Fetching detailed café info from Foursquare for: 56339dbe498ec143050a20ab
+2025-09-07T16:00:21.627705719Z Making Foursquare v3 API request to: https://places-api.foursquare.com/places/56339dbe498ec143050a20ab?fields=fsq_place_id%2Cname%2Clocation%2Clatitude%2Clongitude%2Crating%2Cprice%2Cstats%2Cphotos%2Cwebsite%2Ctel%2Chours%2Ctips%2Cdescription
+2025-09-07T16:00:22.026199688Z Cached detailed info for café: Collective Arts Brewing
+2025-09-07T16:00:22.026934025Z 4:00:22 PM [express] GET /api/cafes/56339dbe498ec143050a20ab/details 200 in 399ms :: {"id":"56339dbe…

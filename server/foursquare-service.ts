@@ -340,7 +340,7 @@ export class FoursquareService {
     }
   }
 
-  // Get detailed information for a specific café
+  // Get detailed information for a specific bar
   async getCafeDetails(placeId: string): Promise<any> {
     const params = {
       fields: 'fsq_place_id,name,location,latitude,longitude,rating,price,stats,photos,website,tel,hours,tips,description'
@@ -350,7 +350,7 @@ export class FoursquareService {
       const response = await this.makeRequest(`/places/${placeId}`, params);
       return response;
     } catch (error) {
-      console.error(`Error fetching details for café ${placeId}:`, error);
+      console.error(`Error fetching details for bar ${placeId}:`, error);
       throw error;
     }
   }

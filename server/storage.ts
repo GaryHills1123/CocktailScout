@@ -240,14 +240,14 @@ export class MemStorage implements IStorage {
     const isCacheValid = cachedData && (now - cachedData.lastFetch < this.cacheExpiry);
     
     if (isCacheValid) {
-      console.log(`Using cached coffee shop data for location ${locationKey} (no API call)`);
+      console.log(`Using cached bar data for location ${locationKey} (no API call)`);
       return cachedData!.cafes.sort((a, b) => b.vibeScore - a.vibeScore);
     }
     
     // Fetch fresh data for this location
     if (this.foursquareService) {
       try {
-        console.log(`Loading real coffee shop data from Foursquare for location: ${lat}, ${lng}`);
+        console.log(`Loading real bar data from Foursquare for location: ${lat}, ${lng}`);
         const realCafes = await this.foursquareService.getCoffeeShopsForLocation(lat, lng);
         console.log(`Foursquare returned ${realCafes.length} cafes`);
         
@@ -287,11 +287,11 @@ export class MemStorage implements IStorage {
     // Check cache first
     const cached = this.cafeDetailsCache.get(id);
     if (cached) {
-      console.log('Using cached café details (no API call)');
+      console.log('Using cached bar details (no API call)');
       return cached;
     }
 
-    // Get basic café info
+    // Get basic bar info
     const basicCafe = this.cafes.get(id);
     if (!basicCafe) {
       return undefined;
@@ -311,7 +311,7 @@ export class MemStorage implements IStorage {
     }
 
     try {
-      console.log(`Fetching detailed café info from Foursquare for: ${id}`);
+      console.log(`Fetching detailed bar info from Foursquare for: ${id}`);
       const detailsResponse = await this.foursquareService.getCafeDetails(id);
       
       // Convert to CafeDetails format
@@ -319,11 +319,11 @@ export class MemStorage implements IStorage {
       
       // Cache the result
       this.cafeDetailsCache.set(id, details);
-      console.log(`Cached detailed info for café: ${basicCafe.name}`);
+      console.log(`Cached detailed info for bar: ${basicCafe.name}`);
       
       return details;
     } catch (error) {
-      console.error(`Failed to fetch details for café ${id}:`, error);
+      console.error(`Failed to fetch details for bar ${id}:`, error);
       // Return basic details as fallback
       const basicDetails: CafeDetails = {
         ...basicCafe,
