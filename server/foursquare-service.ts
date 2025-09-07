@@ -153,7 +153,7 @@ export class FoursquareService {
     limit: number = 50
   ): Promise<FoursquareVenue[]> {
     const params = {
-      query: 'bar',
+      query: 'bar,pub,tavern,brewery,nightlife',
       ll: `${latitude},${longitude}`,
       radius: radius.toString(),
       limit: limit.toString(),
