@@ -65,6 +65,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Debug endpoint to search specific bars and see their categories
+  app.get("/api/debug/search/:query", async (req, res) => {
+    try {
+      const query = req.params.query;
+      console.log(`Debug search for: ${query}`);
+      
+      // Access the foursquare service through storage
+      const results = await (storage as any).searchSpecificVenue(query);
+      res.json(results);
+    } catch (error) {
+      console.error("Error in debug search:", error);
+      res.status(500).json({ error: "Search failed" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

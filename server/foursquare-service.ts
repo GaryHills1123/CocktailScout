@@ -152,18 +152,36 @@ export class FoursquareService {
     radius: number = 10000, // 10km radius
     limit: number = 50
   ): Promise<FoursquareVenue[]> {
-    const params = {
-      query: 'bar', // Search by query instead of categories
-      ll: `${latitude},${longitude}`,
-      radius: radius.toString(),
-      limit: limit.toString(),
-      fields: 'fsq_place_id,name,location,latitude,longitude,rating,price,stats,photos,categories'
-    };
+    // Search multiple bar-related terms to catch more venues
+    const searchTerms = ['bar', 'pub', 'cocktail', 'brewery', 'tavern', 'lounge'];
+    const allResults = new Map<string, any>();
+    
+    // Perform multiple searches to catch different types of bars
+    for (const term of searchTerms) {
+      try {
+        const params = {
+          query: term,
+          ll: `${latitude},${longitude}`,
+          radius: radius.toString(),
+          limit: '25', // Smaller limit per search since we're doing multiple
+          fields: 'fsq_place_id,name,location,latitude,longitude,rating,price,stats,photos,categories'
+        };
 
-    const response: FoursquareResponse = await this.makeRequest('/places/search', params);
+        const response: FoursquareResponse = await this.makeRequest('/places/search', params);
+        
+        // Add results to map to avoid duplicates
+        (response.results || []).forEach(venue => {
+          if (!allResults.has(venue.fsq_place_id)) {
+            allResults.set(venue.fsq_place_id, venue);
+          }
+        });
+      } catch (error) {
+        console.log(`Search failed for term: ${term}`, error);
+      }
+    }
     
     // Filter results to only include actual bars
-    const barResults = (response.results || []).filter(venue => {
+    const barResults = Array.from(allResults.values()).filter(venue => {
       const name = venue.name.toLowerCase();
       const categories = venue.categories || [];
       
@@ -184,7 +202,7 @@ export class FoursquareService {
       return (hasBarName || hasBarCategory) && !isNotBar;
     });
     
-    return barResults;
+    return barResults.slice(0, limit); // Respect original limit
   }
 
   async searchByQuery(
@@ -196,11 +214,10 @@ export class FoursquareService {
   ): Promise<FoursquareVenue[]> {
     const params = {
       query,
-      categories: '13035,13038', // Coffee shop and Cafe categories  
       ll: `${latitude},${longitude}`,
       radius: radius.toString(),
       limit: limit.toString(),
-      fields: 'name,location,categories,rating,stats,price,photos,website,tel,hours,tips'
+      fields: 'fsq_place_id,name,location,latitude,longitude,rating,price,stats,photos,categories'
     };
 
     const response: FoursquareResponse = await this.makeRequest('/places/search', params);

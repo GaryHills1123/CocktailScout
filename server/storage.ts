@@ -416,6 +416,31 @@ export class MemStorage implements IStorage {
       (cafe.tags || []).some(tag => tag.toLowerCase().includes(lowercaseQuery))
     );
   }
+
+  // Debug method to search specific venues and see their categories
+  async searchSpecificVenue(query: string) {
+    if (!this.foursquareService) {
+      return { error: "Foursquare service not available" };
+    }
+    
+    try {
+      const venues = await this.foursquareService.searchByQuery(query, 43.2557, -79.8711);
+      return venues.map(venue => ({
+        name: venue.name,
+        categories: venue.categories?.map((cat: any) => ({
+          id: cat.id,
+          name: cat.name
+        })) || [],
+        address: venue.location.formatted_address,
+        coordinates: {
+          lat: venue.latitude || venue.geocodes?.main?.latitude,
+          lng: venue.longitude || venue.geocodes?.main?.longitude
+        }
+      }));
+    } catch (error) {
+      return { error: error instanceof Error ? error.message : "Search failed" };
+    }
+  }
 }
 
 
