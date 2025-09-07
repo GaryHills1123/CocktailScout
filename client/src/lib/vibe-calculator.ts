@@ -88,7 +88,9 @@ export function calculateVibeScore(
   }
   
   const totalScore = ratingScore + reviewScore + priceScore + photoScore + socialScore + keywordScore + specialtyBonus;
-  return Math.round(Math.min(totalScore, 100));
+  // Boost all scores by +10 to make rankings more exciting
+  const boostedScore = totalScore + 10;
+  return Math.round(Math.min(boostedScore, 100));
 }
 
 export function getScoreColor(score: number): string {
