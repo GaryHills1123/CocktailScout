@@ -152,37 +152,56 @@ export class FoursquareService {
     radius: number = 10000, // 10km radius
     limit: number = 50
   ): Promise<FoursquareVenue[]> {
-    const params = {
-      query: 'cocktail', // Only search for cocktail to avoid dessert places like "Bean Bar"
-      ll: `${latitude},${longitude}`,
-      radius: radius.toString(),
-      limit: limit.toString(),
-      fields: 'fsq_place_id,name,location,latitude,longitude,rating,price,stats,photos,categories'
-    };
-
-    const response: FoursquareResponse = await this.makeRequest('/places/search', params);
+    // Search both "bar" and "cocktail" to catch all types
+    const searchTerms = ['bar', 'cocktail'];
+    const allResults = new Map<string, any>();
     
-    // Very strict filtering - ONLY cocktail bars
-    const cocktailBarResults = (response.results || []).filter(venue => {
+    for (const term of searchTerms) {
+      try {
+        const params = {
+          query: term,
+          ll: `${latitude},${longitude}`,
+          radius: radius.toString(),
+          limit: '30', // Higher limit per search
+          fields: 'fsq_place_id,name,location,latitude,longitude,rating,price,stats,photos,categories'
+        };
+
+        const response: FoursquareResponse = await this.makeRequest('/places/search', params);
+        
+        (response.results || []).forEach(venue => {
+          if (!allResults.has(venue.fsq_place_id)) {
+            allResults.set(venue.fsq_place_id, venue);
+          }
+        });
+      } catch (error) {
+        console.log(`Search failed for term: ${term}`, error);
+      }
+    }
+    
+    // Smart filtering to get actual bars while excluding dessert places
+    const barResults = Array.from(allResults.values()).filter(venue => {
       const name = venue.name.toLowerCase();
       const categories = venue.categories || [];
       
-      // Must have cocktail-related category OR be clearly a cocktail establishment
-      const hasCocktailCategory = categories.some((cat: any) => {
+      // Must have legitimate bar category
+      const hasBarCategory = categories.some((cat: any) => {
         const catName = cat.name?.toLowerCase() || '';
-        return catName.includes('cocktail') || catName.includes('bar');
+        return catName.includes('bar') || catName.includes('cocktail') || catName.includes('pub') ||
+               catName.includes('brewery') || catName.includes('tavern') || catName.includes('lounge');
       });
       
-      // Exclude non-bar establishments
+      // Specific exclusions for dessert places and non-bars
       const isNotBar = name.includes('coffee') || name.includes('cafe') || name.includes('dessert') ||
                        name.includes('ice cream') || name.includes('bakery') || name.includes('restaurant') ||
                        name.includes('food') || name.includes('market') || name.includes('burrito') ||
-                       name.includes('bean') || name.includes('sweet');
+                       name.includes('sweet') || name.includes('donut') || name.includes('pastry') ||
+                       // Specific exclusion for Bean Bar (dessert place)
+                       (name.includes('bean') && name.includes('bar'));
       
-      return hasCocktailCategory && !isNotBar;
+      return hasBarCategory && !isNotBar;
     });
     
-    return cocktailBarResults;
+    return barResults.slice(0, limit);
   }
 
   async searchByQuery(
