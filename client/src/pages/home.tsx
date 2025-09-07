@@ -125,7 +125,7 @@ export default function Home() {
       <div className="flex flex-col lg:flex-row">
         {/* Map View */}
         <div 
-          className={`w-full ${currentView === "list" ? "hidden" : "block"} ${!isMobile ? "lg:w-1/2 xl:w-3/5 lg:block" : ""}`}
+          className={`w-full ${isMobile && currentView === "list" ? "hidden" : "block"} ${!isMobile ? "lg:w-1/2 xl:w-3/5" : ""}`}
           data-testid="container-map"
         >
           <MapView 
@@ -138,7 +138,7 @@ export default function Home() {
 
         {/* Café List */}
         <div 
-          className={`w-full ${currentView === "map" ? "hidden" : "block"} ${!isMobile ? "lg:w-1/2 xl:w-2/5 lg:block" : ""} bg-card`}
+          className={`w-full ${isMobile && currentView === "map" ? "hidden" : "block"} ${!isMobile ? "lg:w-1/2 xl:w-2/5" : ""} bg-card`}
           data-testid="container-list"
         >
           <CafeList 
