@@ -296,8 +296,29 @@ export class FoursquareService {
       website: venue.website || null,
       phone: venue.tel || null,
       openingHours: venue.hours?.display ? { general: venue.hours.display } : {},
-      description: venue.tips?.[0]?.text || `Coffee shop in ${neighborhood}, Hamilton`
+      description: venue.tips?.[0]?.text || this.generateVenueDescription(finalTags, neighborhood)
     };
+  }
+
+  // Generate appropriate venue description based on tags
+  private generateVenueDescription(tags: string[], neighborhood: string): string {
+    const tagStr = tags.join(' ').toLowerCase();
+    
+    if (tagStr.includes('cocktail') || tagStr.includes('lounge')) {
+      return `Cocktail lounge in ${neighborhood}, Hamilton`;
+    } else if (tagStr.includes('brewery') || tagStr.includes('craft beer')) {
+      return `Brewery in ${neighborhood}, Hamilton`;
+    } else if (tagStr.includes('pub') || tagStr.includes('tavern')) {
+      return `Pub in ${neighborhood}, Hamilton`;
+    } else if (tagStr.includes('bar') && !tagStr.includes('coffee')) {
+      return `Bar in ${neighborhood}, Hamilton`;
+    } else if (tagStr.includes('wine')) {
+      return `Wine bar in ${neighborhood}, Hamilton`;
+    } else if (tagStr.includes('coffee') || tagStr.includes('cafe')) {
+      return `Coffee shop in ${neighborhood}, Hamilton`;
+    } else {
+      return `Local venue in ${neighborhood}, Hamilton`;
+    }
   }
 
   async getCoffeeShopsForLocation(latitude: number, longitude: number): Promise<Cafe[]> {
